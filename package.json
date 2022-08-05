@@ -1,0 +1,38 @@
+{
+  "name": "vite-extension",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint --ext .js,.vue,.ts,.jsx,.tsx src",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{vue,js,ts,jsx,tsx}": "eslint --ext .js,.vue,.ts,.jsx,.tsx src"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
+  },
+  "dependencies": {
+    "vue": "^3.2.37"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@vitejs/plugin-vue": "^3.0.1",
+    "commitizen": "^4.2.5",
+    "commitlint-config-cz": "^0.13.3",
+    "commitlint-config-git-commit-emoji": "^1.0.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "cz-customizable": "^6.9.1",
+    "eslint": "^8.21.0",
+    "eslint-plugin-vue": "^9.3.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "sass": "^1.54.3",
+    "vite": "^3.0.4"
+  }
+}

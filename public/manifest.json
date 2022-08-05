@@ -1,0 +1,11 @@
+{
+  "name": "Bad Request",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "Bad Request",
+  "permissions": ["storage", "tabs", "bookmarks", "activeTab", "scripting"],
+  "options_page": "options/index.html",
+  "action": {
+    "default_popup": "popup/index.html"
+  }
+}
