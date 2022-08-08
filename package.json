@@ -10,7 +10,7 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{vue,js,ts,jsx,tsx}": "eslint --ext .js,.vue,.ts,.jsx,.tsx src"
+    "*.{vue,js,ts,jsx,tsx}": "eslint --ext .js,.vue,.ts,.jsx,.tsx options popup public/background"
   },
   "config": {
     "commitizen": {

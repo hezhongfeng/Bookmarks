@@ -1,8 +1,8 @@
 {
-  "name": "Bad Request",
+  "name": "bookmarks",
   "version": "1.0.0",
   "manifest_version": 3,
-  "description": "Bad Request",
+  "description": "嘿嘿嘿",
   "permissions": ["storage", "tabs", "bookmarks", "activeTab", "scripting"],
   "options_page": "options/index.html",
   "action": {
