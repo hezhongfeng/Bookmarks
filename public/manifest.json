@@ -7,5 +7,8 @@
   "options_page": "options/index.html",
   "action": {
     "default_popup": "popup/index.html"
+  },
+  "background": {
+    "service_worker": "background/background.js"
   }
 }
