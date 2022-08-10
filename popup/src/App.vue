@@ -4,7 +4,9 @@
       <el-input v-model="form.title" />
     </el-form-item>
     <el-form-item label="文件夹">
-      <el-input v-model="form.node" />
+      <el-select v-model="form.node" placeholder="Activity zone">
+        <el-option v-for="folder of folders" :key="folder.id" :label="folder.title" :value="folder.id" />
+      </el-select>
     </el-form-item>
     <el-form-item>
       <el-button>取消</el-button>
@@ -15,12 +17,62 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { FOLDER } from '../../utils/setting';
+import { getFoldersByBookmarkTreeNodes } from '../../utils/utils';
+
+console.log('FOLDER', FOLDER);
 
 const form = ref({
   title: '',
   url: '',
   node: ''
 });
+
+const folders = ref([]);
+
+const getBookmarks = () => {
+  // // 只能先搜索一个文件夹，或者成为workspace
+  chrome.bookmarks.search(FOLDER, BookmarkTreeNodes => {
+    // BookmarkTreeNodes是个列表，使用第一个就行，node的数据格式
+    // {
+    //   dateAdded: 1660015576029;
+    //   dateGroupModified: 1660015576029;
+    //   id: '751';
+    //   index: 18;
+    //   parentId: '1';
+    //   title: 'pineconee';
+    // }
+    console.log(BookmarkTreeNodes);
+
+    // 查询文件夹下的所有子节点
+    // [
+    //   {
+    //     "children": [
+    //       {
+    //         "dateAdded": 1660091168701,
+    //         "id": "752",
+    //         "index": 0,
+    //         "parentId": "751",
+    //         "title": "chrome.bookmarks - Chrome Developers",
+    //         "url": "https://developer.chrome.com/docs/extensions/reference/bookmarks/#method-search"
+    //       }
+    //     ],
+    //     "dateAdded": 1660015576029,
+    //     "dateGroupModified": 1660091171834,
+    //     "id": "751",
+    //     "index": 18,
+    //     "parentId": "1",
+    //     "title": "pineconee"
+    //   }
+    // ]
+    chrome.bookmarks.getSubTree(BookmarkTreeNodes[0].id, BookmarkTreeNodes => {
+      // console.log(subTree);
+      folders.value = [];
+      getFoldersByBookmarkTreeNodes(BookmarkTreeNodes, folders.value);
+      console.log(folders.value);
+    });
+  });
+};
 
 onMounted(async () => {
   // 获取当前tab信息
@@ -51,6 +103,8 @@ onMounted(async () => {
   console.log(tab);
   form.value.title = tab.title;
   form.value.url = tab.url;
+
+  getBookmarks();
 });
 
 const onSubmit = () => {

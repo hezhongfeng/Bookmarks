@@ -1,5 +1,8 @@
 // let color = '#3aa757';
 
+// const { FOLDER } = import('../utils/setting');
+// import { FOLDER } from '../../utils/setting';
+
 const FOLDER = 'pineconee';
 
 // chrome.runtime.onInstalled.addListener(() => {
@@ -23,7 +26,7 @@ chrome.bookmarks.search(FOLDER, BookmarkTreeNodes => {
   //   parentId: '1';
   //   title: 'pineconee';
   // }
-  console.log(BookmarkTreeNodes);
+  // console.log(BookmarkTreeNodes);
 
   // 查询文件夹下的所有子节点
   // [
@@ -46,8 +49,8 @@ chrome.bookmarks.search(FOLDER, BookmarkTreeNodes => {
   //     "title": "pineconee"
   //   }
   // ]
-  chrome.bookmarks.getSubTree(BookmarkTreeNodes[0].id, subTree => {
-    console.log(subTree);
+  chrome.bookmarks.getSubTree(BookmarkTreeNodes[0].id, BookmarkTreeNodes => {
+    console.log(BookmarkTreeNodes);
   });
 });
 
