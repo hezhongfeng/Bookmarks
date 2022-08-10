@@ -9,7 +9,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         popup: resolve(__dirname, 'popup/index.html'),
-        options: resolve(__dirname, 'options/index.html')
+        options: resolve(__dirname, 'options/index.html'),
+        newtab: resolve(__dirname, 'newtab/index.html')
       }
     }
   }

@@ -8,6 +8,9 @@
   "action": {
     "default_popup": "popup/index.html"
   },
+  "chrome_url_overrides": {
+    "newtab": "newtab/index.html"
+  },
   "background": {
     "service_worker": "background/background.js"
   }
