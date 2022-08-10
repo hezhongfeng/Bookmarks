@@ -1,31 +1,79 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <el-form :model="form" label-width="120px" class="popup">
+    <el-form-item label="名称">
+      <el-input v-model="form.title" />
+    </el-form-item>
+    <el-form-item label="文件夹">
+      <el-input v-model="form.node" />
+    </el-form-item>
+    <el-form-item>
+      <el-button>取消</el-button>
+      <el-button type="primary" @click="onSubmit">完成</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const form = ref({
+  title: '',
+  url: '',
+  node: ''
+});
+
+onMounted(async () => {
+  // 获取当前tab信息
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  //   {
+  //   "active": true,
+  //   "audible": false,
+  //   "autoDiscardable": true,
+  //   "discarded": false,
+  //   "favIconUrl": "https://developer.mozilla.org/favicon-48x48.cbbd161b.png",
+  //   "groupId": -1,
+  //   "height": 938,
+  //   "highlighted": true,
+  //   "id": 485076623,
+  //   "incognito": false,
+  //   "index": 9,
+  //   "mutedInfo": {
+  //     "muted": false
+  //   },
+  //   "pinned": false,
+  //   "selected": true,
+  //   "status": "complete",
+  //   "title": "runtime.sendMessage() - Mozilla | MDN",
+  //   "url": "https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/sendMessage",
+  //   "width": 747,
+  //   "windowId": 485075405
+  // }
+  console.log(tab);
+  form.value.title = tab.title;
+  form.value.url = tab.url;
+});
+
+const onSubmit = () => {
+  console.log('submit!');
+  chrome.runtime.sendMessage(
+    {
+      payload: {
+        url: form.value.url,
+        title: form.value.title,
+        parentId: 123
+      },
+      action: 'create from popup'
+    },
+    function (response) {
+      console.log(response);
+      window.close();
+    }
+  );
+};
+</script>
+
+<style>
+.popup {
+  padding: 20px;
 }
 </style>
