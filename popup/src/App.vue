@@ -4,9 +4,7 @@
       <el-input v-model="form.title" />
     </el-form-item>
     <el-form-item label="文件夹">
-      <el-select v-model="form.node" placeholder="Activity zone">
-        <el-option v-for="folder of folders" :key="folder.id" :label="folder.title" :value="folder.id" />
-      </el-select>
+      <el-tree-select v-model="form.node" :data="tree" check-strictly :render-after-expand="false" />
     </el-form-item>
     <el-form-item>
       <el-button>取消</el-button>
@@ -18,9 +16,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { FOLDER } from '../../utils/setting';
-import { getFoldersByBookmarkTreeNodes } from '../../utils/utils';
-
-console.log('FOLDER', FOLDER);
+import { getFoldersByBookmarkTreeNodes, getTreeByBookmarkTreeNodes } from '../../utils/utils';
 
 const form = ref({
   title: '',
@@ -30,81 +26,29 @@ const form = ref({
 
 const folders = ref([]);
 
-const getBookmarks = () => {
-  // // 只能先搜索一个文件夹，或者成为workspace
-  chrome.bookmarks.search(FOLDER, BookmarkTreeNodes => {
-    // BookmarkTreeNodes是个列表，使用第一个就行，node的数据格式
-    // {
-    //   dateAdded: 1660015576029;
-    //   dateGroupModified: 1660015576029;
-    //   id: '751';
-    //   index: 18;
-    //   parentId: '1';
-    //   title: 'pineconee';
-    // }
-    console.log(BookmarkTreeNodes);
+const tree = ref([]);
 
-    // 查询文件夹下的所有子节点
-    // [
-    //   {
-    //     "children": [
-    //       {
-    //         "dateAdded": 1660091168701,
-    //         "id": "752",
-    //         "index": 0,
-    //         "parentId": "751",
-    //         "title": "chrome.bookmarks - Chrome Developers",
-    //         "url": "https://developer.chrome.com/docs/extensions/reference/bookmarks/#method-search"
-    //       }
-    //     ],
-    //     "dateAdded": 1660015576029,
-    //     "dateGroupModified": 1660091171834,
-    //     "id": "751",
-    //     "index": 18,
-    //     "parentId": "1",
-    //     "title": "pineconee"
-    //   }
-    // ]
-    chrome.bookmarks.getSubTree(BookmarkTreeNodes[0].id, BookmarkTreeNodes => {
-      // console.log(subTree);
-      folders.value = [];
-      getFoldersByBookmarkTreeNodes(BookmarkTreeNodes, folders.value);
-      console.log(folders.value);
-    });
-  });
+const getFolders = async () => {
+  // 搜索下 workspace
+  const searchBookmarkTreeNodes = await chrome.bookmarks.search(FOLDER);
+  const BookmarkTreeNodes = await chrome.bookmarks.getSubTree(searchBookmarkTreeNodes[0].id);
+  folders.value = [];
+  getFoldersByBookmarkTreeNodes(BookmarkTreeNodes, folders.value);
+  tree.value = [];
+  getTreeByBookmarkTreeNodes(BookmarkTreeNodes, tree.value);
+};
+
+// 获取当前tab信息
+const getCurrentTab = async () => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  form.value.title = tab.title;
+  form.value.url = tab.url;
 };
 
 onMounted(async () => {
-  // 获取当前tab信息
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  //   {
-  //   "active": true,
-  //   "audible": false,
-  //   "autoDiscardable": true,
-  //   "discarded": false,
-  //   "favIconUrl": "https://developer.mozilla.org/favicon-48x48.cbbd161b.png",
-  //   "groupId": -1,
-  //   "height": 938,
-  //   "highlighted": true,
-  //   "id": 485076623,
-  //   "incognito": false,
-  //   "index": 9,
-  //   "mutedInfo": {
-  //     "muted": false
-  //   },
-  //   "pinned": false,
-  //   "selected": true,
-  //   "status": "complete",
-  //   "title": "runtime.sendMessage() - Mozilla | MDN",
-  //   "url": "https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/sendMessage",
-  //   "width": 747,
-  //   "windowId": 485075405
-  // }
-  console.log(tab);
-  form.value.title = tab.title;
-  form.value.url = tab.url;
-
-  getBookmarks();
+  await getCurrentTab();
+  await getFolders();
 });
 
 const onSubmit = () => {
