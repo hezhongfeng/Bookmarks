@@ -1,20 +1,24 @@
 <template>
-  <el-form :model="form" label-width="120px" class="popup">
-    <el-form-item label="名称">
-      <el-input v-model="form.title" />
-    </el-form-item>
-    <el-form-item label="文件夹">
-      <el-tree-select v-model="form.node" :data="tree" check-strictly :render-after-expand="false" />
-    </el-form-item>
-    <el-form-item>
-      <el-button>取消</el-button>
-      <el-button type="primary" @click="onSubmit">完成</el-button>
-    </el-form-item>
-  </el-form>
+  <div class="popup-wrapper">
+    <el-button :icon="Close" text class="close" @click="onClose" />
+    <el-form :model="form" label-width="60px" class="popup-form">
+      <el-form-item label="名称">
+        <el-input v-model="form.title" />
+      </el-form-item>
+      <el-form-item label="文件夹">
+        <el-tree-select v-model="form.node" :data="tree" check-strictly :render-after-expand="false" />
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="onCancel">取消</el-button>
+        <el-button type="primary" @click="onSubmit">完成</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { Close } from '@element-plus/icons-vue';
 import { FOLDER } from '../../utils/setting';
 import { getFoldersByBookmarkTreeNodes, getTreeByBookmarkTreeNodes } from '../../utils/utils';
 
@@ -52,26 +56,57 @@ onMounted(async () => {
 });
 
 const onSubmit = () => {
-  console.log('submit!');
-  chrome.runtime.sendMessage(
+  chrome.bookmarks.create(
     {
-      payload: {
-        url: form.value.url,
-        title: form.value.title,
-        parentId: 123
-      },
-      action: 'create from popup'
+      url: form.value.url,
+      title: form.value.title,
+      parentId: form.value.node
     },
-    function (response) {
-      console.log(response);
+    () => {
       window.close();
     }
   );
+  // chrome.runtime.sendMessage(
+  //   {
+  //     payload: {
+  //       url: form.value.url,
+  //       title: form.value.title,
+  //       parentId: form.value.node
+  //     },
+  //     action: 'create from popup'
+  //   },
+  //   function (response) {
+  //     window.close();
+  //   }
+  // );
+};
+
+const onCancel = () => {
+  window.close();
+};
+
+const onClose = () => {
+  window.close();
 };
 </script>
 
 <style>
-.popup {
-  padding: 20px;
+.popup-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.popup-wrapper .popup-form {
+  width: 75%;
+}
+
+.popup-wrapper .close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
 }
 </style>

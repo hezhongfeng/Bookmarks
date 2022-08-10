@@ -18,6 +18,7 @@
     }
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.6",
     "element-plus": "^2.2.12",
     "vue": "^3.2.37"
   },
