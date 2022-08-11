@@ -1,7 +1,7 @@
 <template>
   <div class="popup-wrapper">
     <el-button :icon="Close" text class="close" @click="onClose" />
-    <el-form :model="form" label-width="60px" class="popup-form">
+    <el-form :model="form" label-width="60px" class="popup-form" size="default">
       <el-form-item label="名称">
         <el-input v-model="form.title" />
       </el-form-item>
@@ -66,19 +66,6 @@ const onSubmit = () => {
       window.close();
     }
   );
-  // chrome.runtime.sendMessage(
-  //   {
-  //     payload: {
-  //       url: form.value.url,
-  //       title: form.value.title,
-  //       parentId: form.value.node
-  //     },
-  //     action: 'create from popup'
-  //   },
-  //   function (response) {
-  //     window.close();
-  //   }
-  // );
 };
 
 const onCancel = () => {
@@ -89,8 +76,10 @@ const onClose = () => {
   window.close();
 };
 </script>
-
-<style>
+<style lang="scss">
+.el-select-dropdown__list {
+  max-height: 150px;
+}
 .popup-wrapper {
   width: 100%;
   height: 100%;
@@ -98,15 +87,16 @@ const onClose = () => {
   justify-content: center;
   align-items: center;
   position: relative;
-}
-
-.popup-wrapper .popup-form {
-  width: 75%;
-}
-
-.popup-wrapper .close {
-  position: absolute;
-  top: 4px;
-  right: 4px;
+  .popup-form {
+    width: 90%;
+    .el-select {
+      width: 100%;
+    }
+  }
+  .close {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+  }
 }
 </style>
