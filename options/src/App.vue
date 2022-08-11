@@ -6,6 +6,7 @@ import HelloWorld from './components/HelloWorld.vue';
 
 <template>
   <div>我是Options页面</div>
+  <HelloWorld />
 </template>
 
 <style scoped>

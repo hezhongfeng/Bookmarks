@@ -1,31 +1,63 @@
+<template>
+  <div class="new-tab">
+    <div class="node-container">
+      <el-button
+        v-for="node of nodes"
+        :key="node.id"
+        :type="node.idFolder ? 'primary' : 'default'"
+        @click="onEnter(node)"
+      >
+        {{ node.title }}
+      </el-button>
+    </div>
+    <Operation :parent-id="currentFolderId" />
+  </div>
+</template>
 <script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue'
+import { FOLDER } from '../../utils/setting';
+import { ref, onMounted } from 'vue';
+import Operation from './components/Operation.vue';
+import { useNodes } from './eventListen';
+
+const { nodes, currentFolderId, getNodes } = useNodes();
+
+// 初始化数据，选
+const init = async () => {
+  // 搜索下 workspace
+  const searchBookmarkTreeNodes = await chrome.bookmarks.search(FOLDER);
+  currentFolderId.value = searchBookmarkTreeNodes[0].id;
+  getNodes();
+};
+
+const onEnter = node => {
+  if (node.idFolder) {
+    currentFolderId.value = node.id;
+    getNodes();
+  } else {
+    chrome.tabs.create({ url: node.url });
+  }
+};
+
+onMounted(async () => {
+  init();
+});
 </script>
 
-<template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
-</template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+<style lang="scss">
+.new-tab {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  padding-top: 20px;
+  .node-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-items: center;
+    padding: 10px;
+    .el-button {
+      margin-right: 10px;
+    }
+  }
 }
 </style>
