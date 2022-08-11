@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
 const nodes = ref([]);
 
@@ -21,6 +21,7 @@ const getNodes = async () => {
 };
 
 // 处理来自chrome的关于bookmark的事件
+
 chrome.bookmarks.onCreated.addListener((id, bookmark) => {
   // 当前folder 需要刷新
   if (bookmark.parentId === currentFolderId.value) {
@@ -28,23 +29,26 @@ chrome.bookmarks.onCreated.addListener((id, bookmark) => {
   }
 });
 
-// chrome.bookmarks.onRemoved.addListener((id, removeInfo) => {
-//   chrome.runtime.sendMessage({ id, removeInfo, action: 'delete' }, function (response) {
-//     response && console.log(response.farewell);
-//   });
-// });
+chrome.bookmarks.onRemoved.addListener((id, bookmark) => {
+  // 当前folder 需要刷新
+  if (bookmark.parentId === currentFolderId.value) {
+    getNodes();
+  }
+});
 
-// chrome.bookmarks.onChanged.addListener((id, changeInfo) => {
-//   chrome.runtime.sendMessage({ id, changeInfo, action: 'change' }, function (response) {
-//     console.log(response.farewell);
-//   });
-// });
+chrome.bookmarks.onChanged.addListener((id, bookmark) => {
+  // 当前folder的一级node变化 需要刷新
+  if (nodes.value.some(node => node.id === id)) {
+    getNodes();
+  }
+});
 
-// chrome.bookmarks.onMoved.addListener((id, moveInfo) => {
-//   chrome.runtime.sendMessage({ id, moveInfo, action: 'move' }, function (response) {
-//     console.log(response.farewell);
-//   });
-// });
+chrome.bookmarks.onMoved.addListener((id, bookmark) => {
+  // 当前folder 需要刷新
+  if (bookmark.parentId === currentFolderId.value) {
+    getNodes();
+  }
+});
 
 export function useNodes() {
   return { nodes, currentFolderId, getNodes };

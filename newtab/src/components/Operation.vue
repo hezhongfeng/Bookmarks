@@ -1,7 +1,9 @@
 <template>
   <div class="operation">
-    <el-row class="mb-4">
+    <el-row class="mb-4" justify="end">
       <el-button type="primary" @click="onAdd">添加</el-button>
+      <el-button type="primary">编辑</el-button>
+      <el-button type="primary">删除</el-button>
     </el-row>
 
     <el-dialog v-model="dialogVisible" title="Add" width="40%">
@@ -80,5 +82,7 @@ const onCancel = () => {
 
 <style lang="scss">
 .operation {
+  height: 20%;
+  padding-top: 10px;
 }
 </style>

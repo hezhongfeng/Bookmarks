@@ -1,16 +1,18 @@
 <template>
   <div class="new-tab">
-    <div class="node-container">
-      <el-button
-        v-for="node of nodes"
-        :key="node.id"
-        :type="node.idFolder ? 'primary' : 'default'"
-        @click="onEnter(node)"
-      >
-        {{ node.title }}
-      </el-button>
+    <div class="container">
+      <el-card class="node-container">
+        <el-button
+          v-for="node of nodes"
+          :key="node.id"
+          :type="node.idFolder ? 'primary' : 'default'"
+          @click="onEnter(node)"
+        >
+          {{ node.title }}
+        </el-button>
+      </el-card>
+      <Operation :parent-id="currentFolderId" />
     </div>
-    <Operation :parent-id="currentFolderId" />
   </div>
 </template>
 <script setup>
@@ -47,16 +49,21 @@ onMounted(async () => {
 .new-tab {
   width: 100%;
   height: 100%;
-  background-color: #fff;
-  padding-top: 20px;
-  .node-container {
+  background-color: aquamarine;
+  .container {
+    padding: 5vw;
+    height: 80%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
-    align-items: center;
-    padding: 10px;
-    .el-button {
-      margin-right: 10px;
+    flex-direction: column;
+    .node-container {
+      height: 40%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: left;
+      .el-button {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
     }
   }
 }
