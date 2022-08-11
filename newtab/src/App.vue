@@ -1,15 +1,28 @@
 <template>
   <div class="new-tab">
     <div class="container">
-      <el-card class="node-container">
-        <el-button
-          v-for="node of nodes"
-          :key="node.id"
-          :type="node.idFolder ? 'primary' : 'default'"
-          @click="onEnter(node)"
-        >
-          {{ node.title }}
-        </el-button>
+      <el-card class="show-container">
+        <div class="bread-crumb">
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item
+              v-for="breadCrumb of breadCrumbs"
+              :key="breadCrumb.id"
+              @click="onBreadCrumb(breadCrumb)"
+            >
+              {{ breadCrumb.title }}
+            </el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
+        <div class="node-container">
+          <el-button
+            v-for="node of nodes"
+            :key="node.id"
+            :type="node.idFolder ? 'primary' : 'default'"
+            @click="onEnter(node)"
+          >
+            {{ node.title }}
+          </el-button>
+        </div>
       </el-card>
       <Operation :parent-id="currentFolderId" />
     </div>
@@ -23,25 +36,42 @@ import { useNodes } from './eventListen';
 
 const { nodes, currentFolderId, getNodes } = useNodes();
 
-// 初始化数据，选
-const init = async () => {
+const breadCrumbs = ref([]);
+
+// 初始化数据，选择默认的文件夹
+const initWorkspace = async () => {
   // 搜索下 workspace
   const searchBookmarkTreeNodes = await chrome.bookmarks.search(FOLDER);
   currentFolderId.value = searchBookmarkTreeNodes[0].id;
+  breadCrumbs.value.push({
+    id: searchBookmarkTreeNodes[0].id,
+    title: searchBookmarkTreeNodes[0].title
+  });
   getNodes();
 };
 
 const onEnter = node => {
   if (node.idFolder) {
     currentFolderId.value = node.id;
+    breadCrumbs.value.push({
+      id: node.id,
+      title: node.title
+    });
     getNodes();
   } else {
     chrome.tabs.create({ url: node.url });
   }
 };
 
+const onBreadCrumb = node => {
+  currentFolderId.value = node.id;
+  const index = breadCrumbs.value.findIndex(item => item.id === node.id);
+  breadCrumbs.value = breadCrumbs.value.slice(0, index + 1);
+  getNodes();
+};
+
 onMounted(async () => {
-  init();
+  initWorkspace();
 });
 </script>
 
@@ -55,14 +85,28 @@ onMounted(async () => {
     height: 80%;
     display: flex;
     flex-direction: column;
-    .node-container {
+    .show-container {
       height: 40%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: left;
-      .el-button {
-        margin-right: 10px;
-        margin-bottom: 10px;
+      .bread-crumb {
+        padding-bottom: 20px;
+        .el-breadcrumb__item {
+          &:hover {
+            cursor: pointer;
+            color: #409eff;
+            transition: all 0.2s;
+          }
+        }
+      }
+
+      .node-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: left;
+        .el-button {
+          margin-left: 0;
+          margin-right: 10px;
+          margin-bottom: 10px;
+        }
       }
     }
   }

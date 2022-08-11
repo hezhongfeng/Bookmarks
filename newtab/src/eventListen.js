@@ -5,10 +5,10 @@ const nodes = ref([]);
 const currentFolderId = ref(null);
 
 const getNodes = async () => {
-  const subTree = await chrome.bookmarks.getSubTree(currentFolderId.value);
+  const subNodes = await chrome.bookmarks.getChildren(currentFolderId.value);
 
   const tempNodes = [];
-  for (const node of subTree[0].children) {
+  for (const node of subNodes) {
     tempNodes.push({
       id: node.id,
       title: node.title,
