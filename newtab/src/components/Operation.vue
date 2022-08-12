@@ -91,11 +91,11 @@ watch(
 
 const dialogVisible = ref(false);
 
-const sendMessage = (payload, action) => {
-  chrome.runtime.sendMessage({ payload, action }, function (response) {
-    console.log('response', response);
-  });
-};
+// const sendMessage = (payload, action) => {
+//   chrome.runtime.sendMessage({ payload, action }, function (response) {
+//     console.log('response', response);
+//   });
+// };
 
 const form = ref({
   tag: '',
@@ -154,8 +154,16 @@ const create = async () => {
   if (form.value.isFolder) {
     delete createDetails.url;
   }
+  console.log('createDetails', createDetails);
   const node = await chrome.bookmarks.create(createDetails);
-  sendMessage(node, 'create tag');
+  console.log('node', node);
+  await chrome.runtime.sendMessage({
+    payload: {
+      node,
+      tag: form.value.tag
+    },
+    action: 'create tag'
+  });
 };
 
 const edit = async () => {

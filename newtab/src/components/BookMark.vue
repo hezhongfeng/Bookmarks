@@ -116,9 +116,9 @@ onMounted(async () => {
         margin-right: 10px;
         margin-bottom: 10px;
         &.is-edit {
-          background-color: #67c23a;
+          background-color: #9C9EFE;
           color: #fff;
-          border-color: #67c23a;
+          border-color: #9C9EFE;
         }
       }
     }

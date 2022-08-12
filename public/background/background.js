@@ -4,46 +4,64 @@
 // import { FOLDER } from '../../utils/setting';
 
 const FOLDER = 'pineconee';
+const TAGS = 'TAGS';
+const NODEANDTAGS = 'NODEANDTAGS';
 
-// chrome.runtime.onInstalled.addListener(() => {
-//   // chrome.storage.sync.set({ color });
-//   // console.log('Default background color set to %cgreen', `color: ${color}`);\
-//   console.log('background.js onInstalled');
-// });
+let tags = [];
+let nodeandtags = [];
 
-// chrome.bookmarks.onChanged.addListener((id, changeInfo) => {
-//   console.log(id, changeInfo);
-// });
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   const { action, payload } = request;
 
   switch (action) {
     case 'create tag':
       console.log('create tag', payload);
+      await createTag(payload.tag);
+      await bindTag(payload.tag, payload.node.id);
       break;
   }
   sendResponse();
 });
 
-// // 后台的初始化，在 chrome 启动的时候运行
-// async function init() {
-//   console.log('background.js init');
-//   // 获取存储的数据
-//   // const data = await getData();
-//   // set的时候，不会替换其他的key
-//   await chrome.storage.sync.set({
-//     name: 'hello'
-//   });
+const createTag = async tag => {
+  console.log('create tag', tag);
+  if (tags.some(item => item === tag)) {
+    return;
+  }
+  tags.push(tag);
+  console.log('tags', {
+    TAGS: tags
+  });
+  await chrome.storage.sync.set({
+    TAGS: tags
+  });
+};
 
-//   await chrome.storage.sync.set({
-//     age: 1231321
-//   });
+const bindTag = async (tag, nodeId) => {
+  if (nodeandtags.some(item => item.tag === tag && item.nodeId === nodeId)) {
+    return;
+  }
+  nodeandtags.push({
+    tag,
+    nodeId
+  });
+  await chrome.storage.sync.set({
+    NODEANDTAGS: nodeandtags
+  });
+};
 
-//   // 取值的时候可以分开取值
-//   const data = await chrome.storage.sync.get('name');
+// 后台的初始化，在 chrome 启动的时候运行
+async function init() {
+  // 取值的时候可以分开取值
+  let storageObj = await chrome.storage.sync.get(TAGS);
+  tags = TAGS in storageObj ? storageObj.TAGS : [];
 
-//   console.log(data);
-// }
+  console.log('tags', tags);
 
-// init();
+  storageObj = await chrome.storage.sync.get(NODEANDTAGS);
+  nodeandtags = NODEANDTAGS in storageObj ? storageObj.NODEANDTAGS : [];
+
+  console.log('nodeandtags', nodeandtags);
+}
+
+init();
