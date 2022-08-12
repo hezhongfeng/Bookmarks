@@ -4,7 +4,6 @@
   "manifest_version": 3,
   "description": "嘿嘿嘿",
   "permissions": ["storage", "tabs", "bookmarks", "activeTab", "scripting"],
-  "options_page": "options/index.html",
   "action": {
     "default_popup": "popup/index.html"
   },
