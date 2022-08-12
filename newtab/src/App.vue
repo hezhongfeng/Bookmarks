@@ -17,14 +17,20 @@
           <el-button
             v-for="node of nodes"
             :key="node.id"
-            :type="node.idFolder ? 'primary' : 'default'"
+            :type="node.isFolder ? 'primary' : 'default'"
+            :class="{ 'is-edit': isEditStatus }"
             @click="onEnter(node)"
           >
             {{ node.title }}
           </el-button>
         </div>
       </el-card>
-      <Operation :parent-id="currentFolderId" />
+      <Operation
+        :parent-id="currentFolderId"
+        :selected-node="selectedNode"
+        :is-edit-status="isEditStatus"
+        @edit-status-change="onisEditStatusChange"
+      />
     </div>
   </div>
 </template>
@@ -37,6 +43,15 @@ import { useNodes } from './eventListen';
 const { nodes, currentFolderId, getNodes } = useNodes();
 
 const breadCrumbs = ref([]);
+
+const isEditStatus = ref(false);
+
+const selectedNode = ref(null);
+
+const onisEditStatusChange = status => {
+  isEditStatus.value = status;
+  selectedNode.value = null;
+};
 
 // 初始化数据，选择默认的文件夹
 const initWorkspace = async () => {
@@ -51,7 +66,12 @@ const initWorkspace = async () => {
 };
 
 const onEnter = node => {
-  if (node.idFolder) {
+  // 选择
+  if (isEditStatus.value) {
+    selectedNode.value = node;
+    return;
+  }
+  if (node.isFolder) {
     currentFolderId.value = node.id;
     breadCrumbs.value.push({
       id: node.id,
@@ -106,6 +126,11 @@ onMounted(async () => {
           margin-left: 0;
           margin-right: 10px;
           margin-bottom: 10px;
+          &.is-edit {
+            background-color: #67c23a;
+            color: #fff;
+            border-color: #67c23a;
+          }
         }
       }
     }
