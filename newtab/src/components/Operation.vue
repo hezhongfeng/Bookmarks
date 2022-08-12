@@ -17,6 +17,9 @@
         <el-form-item :label="form.isFolder ? 'FolderName' : 'Bookmark Name'">
           <el-input v-model="form.title" />
         </el-form-item>
+        <el-form-item label="Tag">
+          <el-input v-model="form.tag" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -88,7 +91,14 @@ watch(
 
 const dialogVisible = ref(false);
 
+const sendMessage = (payload, action) => {
+  chrome.runtime.sendMessage({ payload, action }, function (response) {
+    console.log('response', response);
+  });
+};
+
 const form = ref({
+  tag: '',
   title: '',
   url: '',
   isFolder: false
@@ -124,6 +134,7 @@ const onDelete = () => {
 const clearForm = () => {
   isDelete.value = false;
   form.value = {
+    tag: '',
     title: '',
     url: '',
     isFolder: false
@@ -143,7 +154,8 @@ const create = async () => {
   if (form.value.isFolder) {
     delete createDetails.url;
   }
-  await chrome.bookmarks.create(createDetails);
+  const node = await chrome.bookmarks.create(createDetails);
+  sendMessage(node, 'create tag');
 };
 
 const edit = async () => {

@@ -1,37 +1,42 @@
 <template>
   <div class="new-tab">
-    <div class="container">
-      <el-card class="show-container">
-        <div class="bread-crumb">
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item
-              v-for="breadCrumb of breadCrumbs"
-              :key="breadCrumb.id"
-              @click="onBreadCrumb(breadCrumb)"
-            >
-              {{ breadCrumb.title }}
-            </el-breadcrumb-item>
-          </el-breadcrumb>
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="BookMark" name="bookmark">
+        <div class="container">
+          <el-card class="show-container">
+            <div class="bread-crumb">
+              <el-breadcrumb separator="/">
+                <el-breadcrumb-item
+                  v-for="breadCrumb of breadCrumbs"
+                  :key="breadCrumb.id"
+                  @click="onBreadCrumb(breadCrumb)"
+                >
+                  {{ breadCrumb.title }}
+                </el-breadcrumb-item>
+              </el-breadcrumb>
+            </div>
+            <div class="node-container">
+              <el-button
+                v-for="node of nodes"
+                :key="node.id"
+                :type="node.isFolder ? 'primary' : 'default'"
+                :class="{ 'is-edit': isEditStatus }"
+                @click="onEnter(node)"
+              >
+                {{ node.title }}
+              </el-button>
+            </div>
+          </el-card>
+          <Operation
+            :parent-id="currentFolderId"
+            :selected-node="selectedNode"
+            :is-edit-status="isEditStatus"
+            @edit-status-change="onisEditStatusChange"
+          />
         </div>
-        <div class="node-container">
-          <el-button
-            v-for="node of nodes"
-            :key="node.id"
-            :type="node.isFolder ? 'primary' : 'default'"
-            :class="{ 'is-edit': isEditStatus }"
-            @click="onEnter(node)"
-          >
-            {{ node.title }}
-          </el-button>
-        </div>
-      </el-card>
-      <Operation
-        :parent-id="currentFolderId"
-        :selected-node="selectedNode"
-        :is-edit-status="isEditStatus"
-        @edit-status-change="onisEditStatusChange"
-      />
-    </div>
+      </el-tab-pane>
+      <el-tab-pane label="Config" name="second">Config</el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 <script setup>
@@ -39,6 +44,8 @@ import { FOLDER } from '../../utils/setting';
 import { ref, onMounted } from 'vue';
 import Operation from './components/Operation.vue';
 import { useNodes } from './eventListen';
+
+const activeName = ref('bookmark');
 
 const { nodes, currentFolderId, getNodes } = useNodes();
 
