@@ -9,7 +9,7 @@
     <el-dialog v-model="dialogVisible" title="Add" width="40%" @close="onClosed">
       <el-form label-width="120px" :model="form" style="max-width: 460px">
         <el-form-item>
-          <el-checkbox v-model="form.isFolder" :disabled="isEditStatus">isFolder</el-checkbox>
+          <el-checkbox v-show="!isEditStatus" v-model="form.isFolder">isFolder</el-checkbox>
         </el-form-item>
         <el-form-item v-show="!form.isFolder" label="URL">
           <el-input v-model="form.url" />
@@ -67,9 +67,11 @@ watch(
         })
           .then(async () => {
             await chrome.bookmarks.remove(props.selectedNode.id);
-            dialogVisible.value = false;
           })
-          .catch(() => {
+          .finally(() => {
+            isDelete.value = false;
+            hasSelectedDelete.value = false;
+            emit('edit-status-change', false);
             dialogVisible.value = false;
           });
       } else {
@@ -178,7 +180,6 @@ const onClosed = () => {
   clearForm();
   emit('edit-status-change', false);
 };
-
 </script>
 
 <style lang="scss">

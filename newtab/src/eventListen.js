@@ -47,7 +47,7 @@ chrome.bookmarks.onChanged.addListener((id, bookmark) => {
 
 chrome.bookmarks.onMoved.addListener((id, bookmark) => {
   // 当前folder 需要刷新
-  if (bookmark.parentId === currentFolderId.value) {
+  if (bookmark.parentId === currentFolderId.value || bookmark.oldParentId === currentFolderId.value) {
     getNodes();
   }
 });
