@@ -34,6 +34,9 @@
 <script setup>
 import { ref, watch, nextTick } from 'vue';
 import { ElMessageBox } from 'element-plus';
+import { useTags } from './tags';
+
+const { createTag, bindTag } = useTags();
 
 const props = defineProps({
   parentId: {
@@ -157,13 +160,8 @@ const create = async () => {
   console.log('createDetails', createDetails);
   const node = await chrome.bookmarks.create(createDetails);
   console.log('node', node);
-  await chrome.runtime.sendMessage({
-    payload: {
-      node,
-      tag: form.value.tag
-    },
-    action: 'create tag'
-  });
+  await createTag(form.value.tag);
+  await bindTag(form.value.tag, node.id);
 };
 
 const edit = async () => {

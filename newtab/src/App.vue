@@ -5,7 +5,9 @@
         <el-tab-pane label="BookMark" name="bookmark">
           <book-mark />
         </el-tab-pane>
-        <el-tab-pane label="Tag" name="tag">Tag</el-tab-pane>
+        <el-tab-pane label="Tag" name="tag">
+          <tags />
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -13,6 +15,7 @@
 <script setup>
 import { ref } from 'vue';
 import BookMark from './components/BookMark.vue';
+import Tags from './components/Tags.vue';
 
 const activeName = ref('bookmark');
 </script>
