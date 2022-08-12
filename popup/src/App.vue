@@ -76,6 +76,7 @@ const onClose = () => {
   window.close();
 };
 </script>
+
 <style lang="scss">
 .el-select-dropdown__list {
   max-height: 150px;

@@ -6,7 +6,7 @@ import HelloWorld from './components/HelloWorld.vue';
 
 <template>
   <div>我是Options页面</div>
-  <HelloWorld />
+  <el-button type="primary">完成</el-button>
 </template>
 
 <style scoped>
