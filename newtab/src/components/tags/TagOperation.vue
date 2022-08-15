@@ -53,13 +53,15 @@ const form = ref({
   tag: ''
 });
 
-watch(props.selectedTag, val => {
-  console.log('selectedTag', val);
-  if (val) {
-    form.value.tag = val;
-    dialogVisible.value = true;
+watch(
+  () => props.selectedTag,
+  val => {
+    if (val) {
+      form.value.tag = val;
+      dialogVisible.value = true;
+    }
   }
-});
+);
 
 const clearForm = () => {
   form.value = {

@@ -84,6 +84,7 @@ const bindTags = async (tags, nodeId) => {
 
 const updateTag = async (oldTag, newTag) => {
   console.log('updateTag', oldTag, newTag);
+  console.log('tags.value', tags.value);
   // const index = tags.value.findIndex(item => item === oldTag);
   // tags.value[index] = newTag;
 };

@@ -48,7 +48,6 @@ const onEditStatusChange = status => {
 };
 
 const onEnter = tag => {
-  console.log(isEditStatus.value);
   if (isEditStatus.value) {
     selectedTag.value = tag;
     return;
