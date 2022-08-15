@@ -18,7 +18,17 @@
           <el-input v-model="form.title" />
         </el-form-item>
         <el-form-item label="Tag">
-          <el-input v-model="form.tag" />
+          <el-select
+            v-model="form.tags"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            :reserve-keyword="false"
+            placeholder="Choose or Create tags"
+          >
+            <el-option v-for="tag in tags" :key="tag" :label="tag" :value="tag" />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -36,7 +46,7 @@ import { ref, watch, nextTick } from 'vue';
 import { ElMessageBox } from 'element-plus';
 import { useTags } from './tags';
 
-const { createTag, bindTag } = useTags();
+const { createTag, bindTag, tags } = useTags();
 
 const props = defineProps({
   parentId: {
@@ -94,14 +104,8 @@ watch(
 
 const dialogVisible = ref(false);
 
-// const sendMessage = (payload, action) => {
-//   chrome.runtime.sendMessage({ payload, action }, function (response) {
-//     console.log('response', response);
-//   });
-// };
-
 const form = ref({
-  tag: '',
+  tags: [],
   title: '',
   url: '',
   isFolder: false
@@ -137,7 +141,7 @@ const onDelete = () => {
 const clearForm = () => {
   isDelete.value = false;
   form.value = {
-    tag: '',
+    tags: [],
     title: '',
     url: '',
     isFolder: false
@@ -160,8 +164,11 @@ const create = async () => {
   console.log('createDetails', createDetails);
   const node = await chrome.bookmarks.create(createDetails);
   console.log('node', node);
-  await createTag(form.value.tag);
-  await bindTag(form.value.tag, node.id);
+  for (const tag of form.value.tags) {
+    await createTag(tag);
+    // await bindTag(tag, node.id);
+  }
+  bindTags(form.value.tags, node.id);
 };
 
 const edit = async () => {
@@ -177,6 +184,7 @@ const edit = async () => {
   }
 
   await chrome.bookmarks.update(id, editDetails);
+  bindTags(form.value.tags, id);
 };
 
 const onConfirm = async () => {
@@ -202,7 +210,9 @@ const onClosed = () => {
 
 <style lang="scss">
 .operation {
-  height: 20%;
   padding-top: 10px;
+  .el-select {
+    width: 100%;
+  }
 }
 </style>

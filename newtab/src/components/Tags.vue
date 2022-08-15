@@ -1,14 +1,22 @@
 <template>
   <div class="tags">
-    <el-tag v-for="computedTag of computedTags" :key="computedTag.tag">
-      {{ computedTag.tag + computedTag.count }}
-    </el-tag>
+    <el-card>
+      <div class="tags-container">
+        <div v-for="computedTag of computedTags" :key="computedTag.tag" class="badge">
+          <el-badge :value="computedTag.count" type="primary">
+            <el-button>{{ computedTag.tag }}</el-button>
+          </el-badge>
+        </div>
+      </div>
+    </el-card>
+    <tag-operation></tag-operation>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { useTags } from './tags';
+import TagOperation from './TagOperation.vue';
 
 const { tags, nodeandtags } = useTags();
 
@@ -29,10 +37,14 @@ const computedTags = computed(() => {
 <style lang="scss">
 .tags {
   display: flex;
-  flex-wrap: wrap;
-  .el-tag {
-    margin-right: 8px;
-    margin-bottom: 8px;
+  flex-direction: column;
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    .badge {
+      margin-top: 12px;
+      margin-right: 20px;
+    }
   }
 }
 </style>

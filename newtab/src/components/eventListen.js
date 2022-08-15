@@ -1,4 +1,7 @@
 import { ref } from 'vue';
+import { useTags } from './tags';
+
+const { nodeandtags } = useTags();
 
 const nodes = ref([]);
 
@@ -13,9 +16,12 @@ const getNodes = async () => {
       id: node.id,
       title: node.title,
       isFolder: !node.url,
-      url: node.url || ''
+      url: node.url || '',
+      tags: nodeandtags.value.filter(item => item.nodeId === node.id).map(item => item.tag)
     });
   }
+
+  console.log('tempNodes', tempNodes);
 
   nodes.value = tempNodes;
 };

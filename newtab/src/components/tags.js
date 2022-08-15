@@ -58,6 +58,30 @@ const bindTag = async (tag, nodeId) => {
   });
 };
 
+const bindTags = async (tags, nodeId) => {
+  nodeandtags.value.filter(item => item.nodeId === nodeId);
+  while (nodeandtags.value.some(item => item.nodeId === nodeId)) {
+    nodeandtags.value.splice(
+      nodeandtags.value.find(item => item.nodeId === nodeId),
+      1
+    );
+  }
+  for (const tag of tags) {
+    nodeandtags.value.push({
+      tag,
+      nodeId
+    });
+  }
+  await chrome.storage.sync.set({
+    NODEANDTAGS: nodeandtags.value.map(item => {
+      return {
+        tag: item.tag,
+        nodeId: item.nodeId
+      };
+    })
+  });
+};
+
 const getTags = async () => {
   let storageObj = await chrome.storage.sync.get('TAGS');
   tags.value = 'TAGS' in storageObj ? storageObj.TAGS : [];
@@ -73,5 +97,5 @@ getTags();
 getNodeandtags();
 
 export const useTags = () => {
-  return { tags, nodeandtags, createTag, bindTag, sendUpdateTagMessage, getTags };
+  return { tags, nodeandtags, createTag, bindTag, bindTags, sendUpdateTagMessage, getTags };
 };

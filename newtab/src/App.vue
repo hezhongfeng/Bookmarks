@@ -1,11 +1,11 @@
 <template>
   <div class="new-tab">
     <div class="container">
-      <el-tabs v-model="activeName" type="card">
-        <el-tab-pane label="BookMark" name="bookmark">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="BookMarks" name="bookmark">
           <book-mark />
         </el-tab-pane>
-        <el-tab-pane label="Tag" name="tag">
+        <el-tab-pane label="Tags" name="tag">
           <tags />
         </el-tab-pane>
       </el-tabs>
@@ -23,6 +23,7 @@ const activeName = ref('bookmark');
 <style lang="scss">
 .new-tab {
   padding: 8vw;
+  font-size: 14px;
   .container {
     border: 1px solid #4c4d4f;
     border-radius: 4px;
