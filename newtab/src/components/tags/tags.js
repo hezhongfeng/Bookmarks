@@ -82,6 +82,12 @@ const bindTags = async (tags, nodeId) => {
   });
 };
 
+const updateTag = async (oldTag, newTag) => {
+  console.log('updateTag', oldTag, newTag);
+  // const index = tags.value.findIndex(item => item === oldTag);
+  // tags.value[index] = newTag;
+};
+
 const getTags = async () => {
   let storageObj = await chrome.storage.sync.get('TAGS');
   tags.value = 'TAGS' in storageObj ? storageObj.TAGS : [];
@@ -97,5 +103,5 @@ getTags();
 getNodeandtags();
 
 export const useTags = () => {
-  return { tags, nodeandtags, createTag, bindTag, bindTags, sendUpdateTagMessage, getTags };
+  return { tags, nodeandtags, createTag, bindTag, bindTags, sendUpdateTagMessage, getTags, updateTag };
 };

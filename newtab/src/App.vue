@@ -15,7 +15,7 @@
 <script setup>
 import { ref } from 'vue';
 import BookMark from './components/BookMark.vue';
-import Tags from './components/Tags.vue';
+import Tags from './components/tags/Tags.vue';
 
 const activeName = ref('bookmark');
 </script>

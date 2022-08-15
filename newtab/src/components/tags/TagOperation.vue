@@ -23,17 +23,47 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useTags } from './tags';
+
+const { createTag, updateTag } = useTags();
+
+const props = defineProps({
+  isEditStatus: {
+    type: Boolean,
+    default: false
+  },
+  selectedTag: {
+    type: String,
+    default: ''
+  }
+});
+
+const emit = defineEmits(['edit-status-change']);
 
 const dialogVisible = ref(false);
 
+// const selectedTag = ref('');
+
+const hasSelectedCreate = ref(false);
+const hasSelectedEdit = ref(false);
+const hasSelectedDelete = ref(false);
+
 const form = ref({
-  tags: ''
+  tag: ''
+});
+
+watch(props.selectedTag, val => {
+  console.log('selectedTag', val);
+  if (val) {
+    form.value.tag = val;
+    dialogVisible.value = true;
+  }
 });
 
 const clearForm = () => {
   form.value = {
-    tags: ''
+    tag: ''
   };
 };
 
@@ -42,7 +72,13 @@ const onAdd = () => {
 };
 
 const onEdit = () => {
-  dialogVisible.value = true;
+  if (props.isEditStatus) {
+    emit('edit-status-change', false);
+    hasSelectedEdit.value = false;
+  } else {
+    emit('edit-status-change', true);
+    hasSelectedEdit.value = true;
+  }
 };
 
 const onDelete = () => {
@@ -61,7 +97,21 @@ const onCancel = () => {
   dialogVisible.value = false;
 };
 
-const onConfirm = () => {};
+const onConfirm = () => {
+  const { tag } = form.value;
+  if (!tag) {
+    dialogVisible.value = false;
+    return;
+  }
+
+  if (props.isEditStatus) {
+    updateTag(props.selectedTag, tag);
+    dialogVisible.value = false;
+  } else {
+    createTag(form.value.tag);
+    dialogVisible.value = false;
+  }
+};
 
 const onClosed = () => {
   clearForm();

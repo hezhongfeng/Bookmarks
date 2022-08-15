@@ -44,7 +44,7 @@
 <script setup>
 import { ref, watch, nextTick } from 'vue';
 import { ElMessageBox } from 'element-plus';
-import { useTags } from './tags';
+import { useTags } from './tags/tags';
 
 const { createTag, bindTag, tags } = useTags();
 

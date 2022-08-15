@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { useTags } from './tags';
+import { useTags } from './tags/tags';
 
 const { nodeandtags } = useTags();
 

@@ -4,17 +4,23 @@
       <div class="tags-container">
         <div v-for="computedTag of computedTags" :key="computedTag.tag" class="badge">
           <el-badge :value="computedTag.count" type="primary">
-            <el-button>{{ computedTag.tag }}</el-button>
+            <el-button :type="isEditStatus ? 'primary' : 'default'" @click="onEnter(computedTag.tag)">
+              {{ computedTag.tag }}
+            </el-button>
           </el-badge>
         </div>
       </div>
     </el-card>
-    <tag-operation></tag-operation>
+    <tag-operation
+      :is-edit-status="isEditStatus"
+      :selected-tag="selectedTag"
+      @edit-status-change="onEditStatusChange"
+    ></tag-operation>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useTags } from './tags';
 import TagOperation from './TagOperation.vue';
 
@@ -32,6 +38,22 @@ const computedTags = computed(() => {
   }
   return tempTags;
 });
+
+const isEditStatus = ref(false);
+const selectedTag = ref('');
+
+const onEditStatusChange = status => {
+  isEditStatus.value = status;
+  selectedTag.value = null;
+};
+
+const onEnter = tag => {
+  console.log(isEditStatus.value);
+  if (isEditStatus.value) {
+    selectedTag.value = tag;
+    return;
+  }
+};
 </script>
 
 <style lang="scss">
