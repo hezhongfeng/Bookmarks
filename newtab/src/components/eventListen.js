@@ -17,7 +17,7 @@ const getNodes = async () => {
       title: node.title,
       isFolder: !node.url,
       url: node.url || '',
-      tags: nodeandtags.value.filter(item => item.nodeId === node.id).map(item => item.tag)
+      tagIds: nodeandtags.value.filter(item => item.nodeId === node.id).map(item => item.tagId)
     });
   }
 

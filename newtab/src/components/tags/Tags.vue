@@ -4,8 +4,8 @@
       <div class="tags-container">
         <div v-for="computedTag of computedTags" :key="computedTag.tag" class="badge">
           <el-badge :value="computedTag.count" type="primary">
-            <el-button :type="isEditStatus ? 'primary' : 'default'" @click="onEnter(computedTag.tag)">
-              {{ computedTag.tag }}
+            <el-button :type="isEditStatus ? 'primary' : 'default'" @click="onEnter(computedTag.id)">
+              {{ computedTag.name }}
             </el-button>
           </el-badge>
         </div>
@@ -29,12 +29,13 @@ const { tags, nodeandtags } = useTags();
 const computedTags = computed(() => {
   const tempTags = tags.value.map(tag => {
     return {
-      tag,
+      name: tag.name,
+      id: tag.id,
       count: 0
     };
   });
   for (const nodeandtag of nodeandtags.value) {
-    tempTags.find(tempTag => tempTag.tag === nodeandtag.tag).count++;
+    tempTags.find(tempTag => tempTag.id === nodeandtag.tagId).count++;
   }
   return tempTags;
 });

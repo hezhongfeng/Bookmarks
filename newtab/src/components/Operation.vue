@@ -27,7 +27,7 @@
             :reserve-keyword="false"
             placeholder="Choose or Create tags"
           >
-            <el-option v-for="tag in tags" :key="tag" :label="tag" :value="tag" />
+            <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -46,7 +46,7 @@ import { ref, watch, nextTick } from 'vue';
 import { ElMessageBox } from 'element-plus';
 import { useTags } from './tags/tags';
 
-const { createTag, bindTag, tags } = useTags();
+const { bindTags, tags } = useTags();
 
 const props = defineProps({
   parentId: {
@@ -161,13 +161,9 @@ const create = async () => {
   if (form.value.isFolder) {
     delete createDetails.url;
   }
-  console.log('createDetails', createDetails);
+
   const node = await chrome.bookmarks.create(createDetails);
-  console.log('node', node);
-  for (const tag of form.value.tags) {
-    await createTag(tag);
-    // await bindTag(tag, node.id);
-  }
+
   bindTags(form.value.tags, node.id);
 };
 

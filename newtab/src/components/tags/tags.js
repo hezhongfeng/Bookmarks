@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
 const tags = ref([]);
 const nodeandtags = ref([]);
@@ -29,64 +30,69 @@ const sendUpdateTagMessage = async () => {
   );
 };
 
-const createTag = async tag => {
-  if (tags.value.some(item => item === tag)) {
+const createTag = async name => {
+  if (tags.value.some(item => item.name === name)) {
     return;
   }
-  tags.value.push(tag);
+  tags.value.push({
+    name,
+    id: uuidv4()
+  });
   await chrome.storage.sync.set({
-    TAGS: tags.value.map(item => item)
+    TAGS: tags.value.map(item => {
+      return {
+        name: item.name,
+        id: item.id
+      };
+    })
   });
   sendUpdateTagMessage();
 };
 
-const bindTag = async (tag, nodeId) => {
-  if (nodeandtags.value.some(item => item.tag === tag && item.nodeId === nodeId)) {
+const bindTag = async (tagId, nodeId) => {
+  if (nodeandtags.value.some(item => item.tagId === tagId && item.nodeId === nodeId)) {
     return;
   }
   nodeandtags.value.push({
-    tag,
+    tagId,
     nodeId
   });
   await chrome.storage.sync.set({
     NODEANDTAGS: nodeandtags.value.map(item => {
       return {
-        tag: item.tag,
+        tagId: item.tagId,
         nodeId: item.nodeId
       };
     })
   });
 };
 
-const bindTags = async (tags, nodeId) => {
-  nodeandtags.value.filter(item => item.nodeId === nodeId);
+const bindTags = async (tagIds, nodeId) => {
+  // 解绑所有
   while (nodeandtags.value.some(item => item.nodeId === nodeId)) {
     nodeandtags.value.splice(
       nodeandtags.value.find(item => item.nodeId === nodeId),
       1
     );
   }
-  for (const tag of tags) {
+  for (const tagId of tagIds) {
     nodeandtags.value.push({
-      tag,
+      tagId,
       nodeId
     });
   }
   await chrome.storage.sync.set({
     NODEANDTAGS: nodeandtags.value.map(item => {
       return {
-        tag: item.tag,
+        tagId: item.tagId,
         nodeId: item.nodeId
       };
     })
   });
 };
 
-const updateTag = async (oldTag, newTag) => {
-  console.log('updateTag', oldTag, newTag);
-  console.log('tags.value', tags.value);
-  // const index = tags.value.findIndex(item => item === oldTag);
-  // tags.value[index] = newTag;
+const updateTag = async ({ tagId, tagName }) => {
+  tags.value.find(item => item.id === tagId).nameq = tagName;
 };
 
 const getTags = async () => {
