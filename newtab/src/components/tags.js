@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
 const tags = ref([]);
 const nodeandtags = ref([]);
@@ -18,10 +18,15 @@ const listenUpdateTagMessage = async () => {
 };
 
 const sendUpdateTagMessage = async () => {
-  await chrome.runtime.sendMessage({
-    payload: {},
-    action: 'tags update'
-  });
+  chrome.runtime.sendMessage(
+    {
+      payload: {},
+      action: 'tags update'
+    },
+    function (response) {
+      console.log('response', response);
+    }
+  );
 };
 
 const createTag = async tag => {
@@ -32,7 +37,7 @@ const createTag = async tag => {
   await chrome.storage.sync.set({
     TAGS: tags.value.map(item => item)
   });
-  // sendUpdateTagMessage();
+  sendUpdateTagMessage();
 };
 
 const bindTag = async (tag, nodeId) => {
@@ -58,11 +63,15 @@ const getTags = async () => {
   tags.value = 'TAGS' in storageObj ? storageObj.TAGS : [];
 };
 
+const getNodeandtags = async () => {
+  let storageObj = await chrome.storage.sync.get('NODEANDTAGS');
+  nodeandtags.value = 'NODEANDTAGS' in storageObj ? storageObj.NODEANDTAGS : [];
+};
+
+listenUpdateTagMessage();
+getTags();
+getNodeandtags();
+
 export const useTags = () => {
-  onMounted(() => {
-    console.log(62, onMounted);
-    listenUpdateTagMessage();
-    getTags();
-  });
-  return { tags, createTag, bindTag, sendUpdateTagMessage, getTags };
+  return { tags, nodeandtags, createTag, bindTag, sendUpdateTagMessage, getTags };
 };

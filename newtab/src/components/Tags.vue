@@ -1,15 +1,29 @@
 <template>
   <div class="tags">
-    <el-tag v-for="tag of tags" :key="tag">
-      {{ tag }}
+    <el-tag v-for="computedTag of computedTags" :key="computedTag.tag">
+      {{ computedTag.tag + computedTag.count }}
     </el-tag>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useTags } from './tags';
 
-const { tags } = useTags();
+const { tags, nodeandtags } = useTags();
+
+const computedTags = computed(() => {
+  const tempTags = tags.value.map(tag => {
+    return {
+      tag,
+      count: 0
+    };
+  });
+  for (const nodeandtag of nodeandtags.value) {
+    tempTags.find(tempTag => tempTag.tag === nodeandtag.tag).count++;
+  }
+  return tempTags;
+});
 </script>
 
 <style lang="scss">
