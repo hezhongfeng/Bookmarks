@@ -4,7 +4,7 @@
       <div class="tags-container">
         <div v-for="computedTag of computedTags" :key="computedTag.tag" class="badge">
           <el-badge :value="computedTag.count" type="primary">
-            <el-button :type="isEditStatus ? 'primary' : 'default'" @click="onEnter(computedTag.id)">
+            <el-button :type="isEditStatus ? 'primary' : 'default'" @click="onEnter(computedTag)">
               {{ computedTag.name }}
             </el-button>
           </el-badge>
@@ -41,7 +41,10 @@ const computedTags = computed(() => {
 });
 
 const isEditStatus = ref(false);
-const selectedTag = ref('');
+const selectedTag = ref({
+  id: '',
+  name: ''
+});
 
 const onEditStatusChange = status => {
   isEditStatus.value = status;
@@ -50,7 +53,10 @@ const onEditStatusChange = status => {
 
 const onEnter = tag => {
   if (isEditStatus.value) {
-    selectedTag.value = tag;
+    selectedTag.value = {
+      id: tag.id,
+      name: tag.name
+    };
     return;
   }
 };

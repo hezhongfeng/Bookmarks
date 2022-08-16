@@ -10,7 +10,6 @@ const listenUpdateTagMessage = async () => {
 
     switch (action) {
       case 'tags update':
-        console.log('tags update', payload);
         await getTags();
         break;
     }
@@ -38,14 +37,16 @@ const createTag = async name => {
     name,
     id: uuidv4()
   });
-  await chrome.storage.sync.set({
-    TAGS: tags.value.map(item => {
-      return {
-        name: item.name,
-        id: item.id
-      };
-    })
-  });
+  await saveTags();
+  sendUpdateTagMessage();
+};
+
+const deleteTag = async tagId => {
+  tags.value.splice(
+    tags.value.findIndex(item => item.id === tagId),
+    1
+  );
+  await saveTags();
   sendUpdateTagMessage();
 };
 
@@ -81,6 +82,32 @@ const bindTags = async (tagIds, nodeId) => {
       nodeId
     });
   }
+  saveNodeandtags();
+};
+
+const updateTag = async ({ tagId, tagName }) => {
+  tags.value.find(item => item.id === tagId).name = tagName;
+  await saveTags();
+  sendUpdateTagMessage();
+};
+
+const getTags = async () => {
+  let storageObj = await chrome.storage.sync.get('TAGS');
+  tags.value = 'TAGS' in storageObj ? storageObj.TAGS : [];
+};
+
+const saveTags = async () => {
+  await chrome.storage.sync.set({
+    TAGS: tags.value.map(item => {
+      return {
+        name: item.name,
+        id: item.id
+      };
+    })
+  });
+};
+
+const saveNodeandtags = async () => {
   await chrome.storage.sync.set({
     NODEANDTAGS: nodeandtags.value.map(item => {
       return {
@@ -89,15 +116,6 @@ const bindTags = async (tagIds, nodeId) => {
       };
     })
   });
-};
-
-const updateTag = async ({ tagId, tagName }) => {
-  tags.value.find(item => item.id === tagId).nameq = tagName;
-};
-
-const getTags = async () => {
-  let storageObj = await chrome.storage.sync.get('TAGS');
-  tags.value = 'TAGS' in storageObj ? storageObj.TAGS : [];
 };
 
 const getNodeandtags = async () => {
@@ -110,5 +128,5 @@ getTags();
 getNodeandtags();
 
 export const useTags = () => {
-  return { tags, nodeandtags, createTag, bindTag, bindTags, sendUpdateTagMessage, getTags, updateTag };
+  return { tags, nodeandtags, createTag, bindTag, bindTags, sendUpdateTagMessage, getTags, updateTag, deleteTag };
 };

@@ -21,8 +21,6 @@ const getNodes = async () => {
     });
   }
 
-  console.log('tempNodes', tempNodes);
-
   nodes.value = tempNodes;
 };
 

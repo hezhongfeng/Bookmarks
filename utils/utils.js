@@ -97,6 +97,4 @@ const bb = [];
 
 getTreeByBookmarkTreeNodes(aa, bb);
 
-console.log(JSON.stringify(bb));
-
 export { getFoldersByBookmarkTreeNodes, getTreeByBookmarkTreeNodes };

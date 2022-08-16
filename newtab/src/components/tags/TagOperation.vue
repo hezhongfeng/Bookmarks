@@ -1,15 +1,15 @@
 <template>
   <div class="tag-operation">
     <el-row class="mb-4" justify="end">
-      <el-button type="primary" @click="onAdd">添加</el-button>
-      <el-button type="primary" @click="onEdit">编辑</el-button>
-      <el-button type="primary" @click="onDelete">删除</el-button>
+      <el-button type="primary" :disabled="hasSelectedEdit || hasSelectedDelete" @click="onAdd">添加</el-button>
+      <el-button type="primary" :disabled="hasSelectedDelete" @click="onEdit">编辑</el-button>
+      <el-button type="primary" :disabled="hasSelectedEdit" @click="onDelete">删除</el-button>
     </el-row>
 
     <el-dialog v-model="dialogVisible" title="Add" width="40%" @close="onClosed">
       <el-form label-width="120px" :model="form" style="max-width: 460px">
         <el-form-item label="Tag">
-          <el-input v-model="form.tag" />
+          <el-input v-model="form.name" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -26,7 +26,7 @@
 import { ref, watch } from 'vue';
 import { useTags } from './tags';
 
-const { createTag, updateTag } = useTags();
+const { createTag, updateTag, deleteTag } = useTags();
 
 const props = defineProps({
   isEditStatus: {
@@ -34,8 +34,11 @@ const props = defineProps({
     default: false
   },
   selectedTag: {
-    type: String,
-    default: ''
+    type: Object,
+    default: () => ({
+      id: '',
+      name: ''
+    })
   }
 });
 
@@ -43,29 +46,45 @@ const emit = defineEmits(['edit-status-change']);
 
 const dialogVisible = ref(false);
 
-// const selectedTag = ref('');
-
-const hasSelectedCreate = ref(false);
 const hasSelectedEdit = ref(false);
 const hasSelectedDelete = ref(false);
 
 const form = ref({
-  tag: ''
+  name: '',
+  id: ''
 });
 
 watch(
   () => props.selectedTag,
   val => {
     if (val) {
-      form.value.tag = val;
-      dialogVisible.value = true;
+      if (hasSelectedEdit.value) {
+        form.value.name = val.name;
+        form.value.id = val.id;
+        dialogVisible.value = true;
+      } else {
+        ElMessageBox.confirm('确定删除所选?', '注意', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(async () => {
+            deleteTag(val.id);
+          })
+          .finally(() => {
+            hasSelectedDelete.value = false;
+            emit('edit-status-change', false);
+            dialogVisible.value = false;
+          });
+      }
     }
   }
 );
 
 const clearForm = () => {
   form.value = {
-    tag: ''
+    name: '',
+    id: ''
   };
 };
 
@@ -84,15 +103,13 @@ const onEdit = () => {
 };
 
 const onDelete = () => {
-  ElMessageBox.confirm('确定要删除吗?', '提示', {
-    type: 'warning'
-  })
-    .then(() => {
-      console.log('删除');
-    })
-    .catch(() => {
-      console.log('取消');
-    });
+  if (props.isEditStatus) {
+    emit('edit-status-change', false);
+    hasSelectedDelete.value = false;
+  } else {
+    emit('edit-status-change', true);
+    hasSelectedDelete.value = true;
+  }
 };
 
 const onCancel = () => {
@@ -100,22 +117,27 @@ const onCancel = () => {
 };
 
 const onConfirm = () => {
-  const { tag } = form.value;
-  if (!tag) {
+  const { id, name } = form.value;
+  if (!name) {
     dialogVisible.value = false;
     return;
   }
 
   if (props.isEditStatus) {
-    updateTag(props.selectedTag, tag);
+    updateTag({
+      tagId: id,
+      tagName: name
+    });
     dialogVisible.value = false;
   } else {
-    createTag(form.value.tag);
+    createTag(form.value.name);
     dialogVisible.value = false;
   }
 };
 
 const onClosed = () => {
+  hasSelectedEdit.value = false;
+  hasSelectedDelete.value = false;
   clearForm();
   emit('edit-status-change', false);
 };

@@ -18,15 +18,7 @@
           <el-input v-model="form.title" />
         </el-form-item>
         <el-form-item label="Tag">
-          <el-select
-            v-model="form.tags"
-            multiple
-            filterable
-            allow-create
-            default-first-option
-            :reserve-keyword="false"
-            placeholder="Choose or Create tags"
-          >
+          <el-select v-model="form.tags" multiple placeholder="Choose or Create tags">
             <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
           </el-select>
         </el-form-item>
