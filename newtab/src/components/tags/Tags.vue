@@ -4,8 +4,11 @@
       <div class="tags-container">
         <div v-for="computedTag of computedTags" :key="computedTag.tag" class="badge">
           <el-badge :value="computedTag.count" type="primary">
-            <el-button :type="isEditStatus ? 'primary' : 'default'" @click="onEnter(computedTag)">
+            <el-button :type="isEditStatus ? 'primary' : ''" @click="onEnter(computedTag)">
               {{ computedTag.name }}
+              <template #icon>
+                <img :src="tagIcon" />
+              </template>
             </el-button>
           </el-badge>
         </div>
@@ -23,6 +26,7 @@
 import { computed, ref } from 'vue';
 import { useTags } from './tags';
 import TagOperation from './TagOperation.vue';
+import tagIcon from '../../assets/tag.svg';
 
 const { tags, nodeandtags } = useTags();
 

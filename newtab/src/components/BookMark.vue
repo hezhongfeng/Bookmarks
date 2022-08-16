@@ -9,14 +9,11 @@
         </el-breadcrumb>
       </div>
       <div class="node-container">
-        <el-button
-          v-for="node of nodes"
-          :key="node.id"
-          :type="node.isFolder ? 'primary' : 'default'"
-          :class="{ 'is-edit': isEditStatus }"
-          @click="onEnter(node)"
-        >
+        <el-button v-for="node of nodes" :key="node.id" :type="isEditStatus ? 'primary' : ''" @click="onEnter(node)">
           {{ node.title }}
+          <template #icon>
+            <img :src="node.isFolder ? folderIcon : linkIcon" />
+          </template>
         </el-button>
       </div>
     </el-card>
@@ -34,6 +31,8 @@ import { FOLDER } from '../../../utils/setting';
 import { ref, onMounted } from 'vue';
 import Operation from './Operation.vue';
 import { useNodes } from './eventListen';
+import linkIcon from '../assets/link.svg';
+import folderIcon from '../assets/folder.svg';
 
 const { nodes, currentFolderId, getNodes } = useNodes();
 
@@ -115,11 +114,6 @@ onMounted(async () => {
         margin-left: 0;
         margin-right: 10px;
         margin-bottom: 10px;
-        &.is-edit {
-          background-color: #9C9EFE;
-          color: #fff;
-          border-color: #9C9EFE;
-        }
       }
     }
   }
