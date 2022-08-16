@@ -2,8 +2,8 @@
   <div class="operation">
     <el-row class="mb-4" justify="end">
       <el-button type="primary" :disabled="hasSelectedEdit || hasSelectedDelete" @click="onAdd">添加</el-button>
-      <el-button type="primary" :disabled="hasSelectedCreate || hasSelectedDelete" @click="onEdit">编辑</el-button>
-      <el-button type="primary" :disabled="hasSelectedCreate || hasSelectedEdit" @click="onDelete">删除</el-button>
+      <el-button type="primary" :disabled="hasSelectedDelete" @click="onEdit">编辑</el-button>
+      <el-button type="primary" :disabled="hasSelectedEdit" @click="onDelete">删除</el-button>
     </el-row>
 
     <el-dialog v-model="dialogVisible" title="Add" width="40%" @close="onClosed">
@@ -55,9 +55,6 @@ const props = defineProps({
   }
 });
 
-const isDelete = ref(false);
-
-const hasSelectedCreate = ref(false);
 const hasSelectedEdit = ref(false);
 const hasSelectedDelete = ref(false);
 
@@ -67,7 +64,7 @@ watch(
   () => props.selectedNode,
   newVal => {
     if (newVal) {
-      if (isDelete.value) {
+      if (hasSelectedDelete.value) {
         ElMessageBox.confirm('确定删除所选?', '注意', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -77,7 +74,6 @@ watch(
             await chrome.bookmarks.remove(props.selectedNode.id);
           })
           .finally(() => {
-            isDelete.value = false;
             hasSelectedDelete.value = false;
             emit('edit-status-change', false);
             dialogVisible.value = false;
@@ -104,12 +100,11 @@ const form = ref({
 });
 
 const onAdd = () => {
-  hasSelectedCreate.value = true;
   dialogVisible.value = true;
 };
 
 const onEdit = () => {
-  if (hasSelectedEdit.value) {
+  if (props.isEditStatus) {
     hasSelectedEdit.value = false;
     emit('edit-status-change', false);
   } else {
@@ -119,26 +114,22 @@ const onEdit = () => {
 };
 
 const onDelete = () => {
-  if (hasSelectedDelete.value) {
-    isDelete.value = false;
+  if (props.isEditStatus) {
     hasSelectedDelete.value = false;
     emit('edit-status-change', false);
   } else {
-    isDelete.value = true;
     hasSelectedDelete.value = true;
     emit('edit-status-change', true);
   }
 };
 
 const clearForm = () => {
-  isDelete.value = false;
   form.value = {
     tags: [],
     title: '',
     url: '',
     isFolder: false
   };
-  hasSelectedCreate.value = false;
   hasSelectedEdit.value = false;
   hasSelectedDelete.value = false;
 };
