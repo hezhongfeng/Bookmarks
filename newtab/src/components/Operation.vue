@@ -189,7 +189,7 @@ const onClosed = () => {
 
 <style lang="scss">
 .operation {
-  padding-top: 10px;
+  padding-top: 20px;
   .el-select {
     width: 100%;
   }

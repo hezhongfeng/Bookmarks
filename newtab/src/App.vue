@@ -25,11 +25,21 @@ const activeName = ref('bookmark');
   padding: 8vw;
   font-size: 14px;
   .container {
-    border: 1px solid #4c4d4f;
+    border: 1px solid #dcdfe6;
     border-radius: 4px;
     padding: 2vw;
+    height: 50vh;
     .el-tabs {
       height: 80%;
+    }
+    .el-button {
+      span {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 150px;
+      }
     }
   }
 }

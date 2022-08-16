@@ -145,6 +145,6 @@ const onClosed = () => {
 
 <style lang="scss">
 .tag-operation {
-  padding-top: 10px;
+  padding-top: 20px;
 }
 </style>
