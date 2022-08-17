@@ -17,7 +17,7 @@
         <el-form-item :label="form.isFolder ? 'FolderName' : 'Bookmark Name'">
           <el-input v-model="form.title" />
         </el-form-item>
-        <el-form-item label="Tag">
+        <el-form-item v-show="!form.isFolder" label="Tag">
           <el-select v-model="form.tags" multiple placeholder="Choose or Create tags">
             <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
           </el-select>
@@ -36,7 +36,7 @@
 <script setup>
 import { ref, watch, nextTick } from 'vue';
 import { ElMessageBox } from 'element-plus';
-import { useTags } from './tags/tags';
+import { useTags } from '../tags/tags';
 
 const { bindTags, tags } = useTags();
 
@@ -178,12 +178,13 @@ const onConfirm = async () => {
 
 const onCancel = () => {
   dialogVisible.value = false;
-  emit('edit-status-change', false);
 };
 
 const onClosed = () => {
-  clearForm();
-  emit('edit-status-change', false);
+  setTimeout(() => {
+    clearForm();
+    emit('edit-status-change', false);
+  }, 100);
 };
 </script>
 

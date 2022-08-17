@@ -27,12 +27,12 @@
 </template>
 
 <script setup>
-import { FOLDER } from '../../../utils/setting';
+import { FOLDER } from '../../../../utils/setting';
 import { ref, onMounted } from 'vue';
 import Operation from './Operation.vue';
 import { useNodes } from './eventListen';
-import linkIcon from '../assets/link.svg';
-import folderIcon from '../assets/folder.svg';
+import linkIcon from '../../assets/link.svg';
+import folderIcon from '../../assets/folder.svg';
 
 const { nodes, currentFolderId, getNodes } = useNodes();
 

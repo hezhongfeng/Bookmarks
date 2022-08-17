@@ -33,10 +33,12 @@ const createTag = async name => {
   if (tags.value.some(item => item.name === name)) {
     return;
   }
+  console.log('name', name);
   tags.value.push({
     name,
     id: uuidv4()
   });
+  console.log('tags', tags.value);
   await saveTags();
   sendUpdateTagMessage();
 };

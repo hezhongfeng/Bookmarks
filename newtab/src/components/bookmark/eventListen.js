@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { useTags } from './tags/tags';
+import { useTags } from '../tags/tags';
 
 const { nodeandtags } = useTags();
 
@@ -9,8 +9,6 @@ const currentFolderId = ref(null);
 
 const getNodes = async () => {
   const subNodes = await chrome.bookmarks.getChildren(currentFolderId.value);
-
-  console.log(subNodes);
 
   const tempNodes = [];
   for (const node of subNodes) {

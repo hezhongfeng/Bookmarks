@@ -57,12 +57,12 @@ const form = ref({
 watch(
   () => props.selectedTag,
   val => {
-    if (val) {
+    if (val.id) {
       if (hasSelectedEdit.value) {
         form.value.name = val.name;
         form.value.id = val.id;
         dialogVisible.value = true;
-      } else {
+      } else if (hasSelectedDelete.value) {
         ElMessageBox.confirm('确定删除所选?', '注意', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -138,8 +138,10 @@ const onConfirm = () => {
 const onClosed = () => {
   hasSelectedEdit.value = false;
   hasSelectedDelete.value = false;
-  clearForm();
-  emit('edit-status-change', false);
+  setTimeout(() => {
+    clearForm();
+    emit('edit-status-change', false);
+  }, 100);
 };
 </script>
 

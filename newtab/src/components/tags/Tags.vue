@@ -19,6 +19,18 @@
       :selected-tag="selectedTag"
       @edit-status-change="onEditStatusChange"
     ></tag-operation>
+    <el-dialog v-model="dialogVisible" :title="selectedTag.name" width="40%">
+      <el-card>
+        <div class="node-container">
+          <el-button v-for="node of nodes" :key="node.id" @click="onEnterNode(node)">
+            {{ node.title }}
+            <template #icon>
+              <img :src="node.isFolder ? folderIcon : linkIcon" />
+            </template>
+          </el-button>
+        </div>
+      </el-card>
+    </el-dialog>
   </div>
 </template>
 
@@ -27,6 +39,8 @@ import { computed, ref } from 'vue';
 import { useTags } from './tags';
 import TagOperation from './TagOperation.vue';
 import tagIcon from '../../assets/tag.svg';
+import linkIcon from '../../assets/link.svg';
+import folderIcon from '../../assets/folder.svg';
 
 const { tags, nodeandtags } = useTags();
 
@@ -49,19 +63,48 @@ const selectedTag = ref({
   id: '',
   name: ''
 });
+const dialogVisible = ref(false);
+const nodes = ref([]);
+
+const getNodes = async () => {
+  const nodeIds = nodeandtags.value
+    .filter(item => item.tagId === selectedTag.value.id)
+    .map(nodeandtag => nodeandtag.nodeId);
+  const tempNodes = [];
+  for (const nodeId of nodeIds) {
+    const [node] = await chrome.bookmarks.get(nodeId);
+    tempNodes.push({
+      id: node.id,
+      title: node.title,
+      isFolder: !node.url,
+      url: node.url || ''
+    });
+  }
+  nodes.value = tempNodes;
+};
+
+const onEnterNode = node => {
+  if (!node.isFolder) {
+    chrome.tabs.create({ url: node.url });
+  }
+};
 
 const onEditStatusChange = status => {
   isEditStatus.value = status;
-  selectedTag.value = null;
+  selectedTag.value = {
+    id: '',
+    name: ''
+  };
 };
 
-const onEnter = tag => {
-  if (isEditStatus.value) {
-    selectedTag.value = {
-      id: tag.id,
-      name: tag.name
-    };
-    return;
+const onEnter = async tag => {
+  selectedTag.value = {
+    id: tag.id,
+    name: tag.name
+  };
+  if (!isEditStatus.value) {
+    await getNodes();
+    dialogVisible.value = true;
   }
 };
 </script>
