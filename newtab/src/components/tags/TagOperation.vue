@@ -7,8 +7,8 @@
     </el-row>
 
     <el-dialog v-model="dialogVisible" title="Add" width="40%" @close="onClosed">
-      <el-form label-width="120px" :model="form" style="max-width: 460px">
-        <el-form-item label="Tag">
+      <el-form ref="ruleFormRef" label-width="120px" :model="form" :rules="rules" status-icon style="max-width: 460px">
+        <el-form-item label="Tag" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
       </el-form>
@@ -52,6 +52,10 @@ const hasSelectedDelete = ref(false);
 const form = ref({
   name: '',
   id: ''
+});
+
+const rules = ref({
+  name: [{ required: true, message: 'Please input tag name', trigger: 'blur' }]
 });
 
 watch(
@@ -116,23 +120,30 @@ const onCancel = () => {
   dialogVisible.value = false;
 };
 
-const onConfirm = () => {
-  const { id, name } = form.value;
-  if (!name) {
-    dialogVisible.value = false;
-    return;
-  }
+const ruleFormRef = ref(null);
 
-  if (props.isEditStatus) {
-    updateTag({
-      tagId: id,
-      tagName: name
-    });
-    dialogVisible.value = false;
-  } else {
-    createTag(form.value.name);
-    dialogVisible.value = false;
-  }
+const onConfirm = () => {
+  ruleFormRef.value.validate(valid => {
+    if (!valid) {
+      return false;
+    }
+    const { id, name } = form.value;
+    if (!name) {
+      dialogVisible.value = false;
+      return;
+    }
+
+    if (props.isEditStatus) {
+      updateTag({
+        tagId: id,
+        tagName: name
+      });
+      dialogVisible.value = false;
+    } else {
+      createTag(form.value.name);
+      dialogVisible.value = false;
+    }
+  });
 };
 
 const onClosed = () => {

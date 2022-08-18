@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, nextTick } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import { ElMessageBox } from 'element-plus';
 import { useTags } from '../tags/tags';
 
@@ -122,7 +122,7 @@ const validateUrl = (rule, value) => {
   });
 };
 
-const rules = reactive({
+const rules = ref({
   url: [
     { required: true, message: 'Please input url', trigger: 'blur' },
     { validator: validateUrl, trigger: 'blur' }
@@ -201,9 +201,16 @@ const onConfirm = async () => {
     ruleFormRef.value.validate(valid => {
       if (!valid) {
         return false;
+      } else {
+        confirm();
       }
     });
+  } else {
+    confirm();
   }
+};
+
+const confirm = async () => {
   if (props.isEditStatus) {
     await edit();
   } else {
