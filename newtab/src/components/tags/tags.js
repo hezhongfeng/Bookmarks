@@ -33,14 +33,11 @@ const createTag = async name => {
   if (tags.value.some(item => item.name === name)) {
     return;
   }
-  console.log('name', name);
   tags.value.push({
     name,
     id: uuidv4()
   });
-  console.log('tags', tags.value);
   await saveTags();
-  sendUpdateTagMessage();
 };
 
 const deleteTag = async tagId => {
@@ -49,25 +46,6 @@ const deleteTag = async tagId => {
     1
   );
   await saveTags();
-  sendUpdateTagMessage();
-};
-
-const bindTag = async (tagId, nodeId) => {
-  if (nodeandtags.value.some(item => item.tagId === tagId && item.nodeId === nodeId)) {
-    return;
-  }
-  nodeandtags.value.push({
-    tagId,
-    nodeId
-  });
-  await chrome.storage.sync.set({
-    NODEANDTAGS: nodeandtags.value.map(item => {
-      return {
-        tagId: item.tagId,
-        nodeId: item.nodeId
-      };
-    })
-  });
 };
 
 const bindTags = async (tagIds, nodeId) => {
@@ -90,7 +68,6 @@ const bindTags = async (tagIds, nodeId) => {
 const updateTag = async ({ tagId, tagName }) => {
   tags.value.find(item => item.id === tagId).name = tagName;
   await saveTags();
-  sendUpdateTagMessage();
 };
 
 const getTags = async () => {
@@ -107,6 +84,7 @@ const saveTags = async () => {
       };
     })
   });
+  sendUpdateTagMessage();
 };
 
 const saveNodeandtags = async () => {
@@ -118,6 +96,7 @@ const saveNodeandtags = async () => {
       };
     })
   });
+  sendUpdateTagMessage();
 };
 
 const getNodeandtags = async () => {
@@ -130,5 +109,5 @@ getTags();
 getNodeandtags();
 
 export const useTags = () => {
-  return { tags, nodeandtags, createTag, bindTag, bindTags, sendUpdateTagMessage, getTags, updateTag, deleteTag };
+  return { tags, nodeandtags, createTag, bindTags, sendUpdateTagMessage, getTags, updateTag, deleteTag };
 };

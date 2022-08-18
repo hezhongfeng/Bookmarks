@@ -18,7 +18,7 @@
           <el-input v-model="form.title" />
         </el-form-item>
         <el-form-item v-show="!form.isFolder" label="Tag">
-          <el-select v-model="form.tags" multiple placeholder="Choose or Create tags">
+          <el-select v-model="form.tagIds" multiple placeholder="Choose or Create tags">
             <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
           </el-select>
         </el-form-item>
@@ -107,7 +107,7 @@ function isValidHttpUrl(string) {
 const dialogVisible = ref(false);
 
 const form = ref({
-  tags: [],
+  tagIds: [],
   title: '',
   url: '',
   isFolder: false
@@ -155,7 +155,7 @@ const onDelete = () => {
 
 const clearForm = () => {
   form.value = {
-    tags: [],
+    tagIds: [],
     title: '',
     url: '',
     isFolder: false
@@ -177,7 +177,7 @@ const create = async () => {
 
   const node = await chrome.bookmarks.create(createDetails);
 
-  bindTags(form.value.tags, node.id);
+  bindTags(form.value.tagIds, node.id);
 };
 
 const edit = async () => {
@@ -193,7 +193,7 @@ const edit = async () => {
   }
 
   await chrome.bookmarks.update(id, editDetails);
-  bindTags(form.value.tags, id);
+  bindTags(form.value.tagIds, id);
 };
 
 const onConfirm = async () => {
