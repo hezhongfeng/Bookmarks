@@ -7,11 +7,11 @@
     </el-row>
 
     <el-dialog v-model="dialogVisible" title="Add" width="40%" @close="onClosed">
-      <el-form label-width="120px" :model="form" style="max-width: 460px">
+      <el-form ref="ruleFormRef" label-width="120px" :model="form" :rules="rules" status-icon style="max-width: 460px">
         <el-form-item>
           <el-checkbox v-show="!isEditStatus" v-model="form.isFolder">isFolder</el-checkbox>
         </el-form-item>
-        <el-form-item v-show="!form.isFolder" label="URL">
+        <el-form-item v-show="!form.isFolder" label="URL" prop="url">
           <el-input v-model="form.url" />
         </el-form-item>
         <el-form-item :label="form.isFolder ? 'FolderName' : 'Bookmark Name'">
@@ -34,9 +34,11 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from 'vue';
+import { ref, reactive, watch, nextTick } from 'vue';
 import { ElMessageBox } from 'element-plus';
 import { useTags } from '../tags/tags';
+
+const ruleFormRef = ref(null);
 
 const { bindTags, tags } = useTags();
 
@@ -90,6 +92,18 @@ watch(
   }
 );
 
+function isValidHttpUrl(string) {
+  let url;
+
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;
+  }
+
+  return url.protocol === 'http:' || url.protocol === 'https:';
+}
+
 const dialogVisible = ref(false);
 
 const form = ref({
@@ -97,6 +111,22 @@ const form = ref({
   title: '',
   url: '',
   isFolder: false
+});
+
+const validateUrl = (rule, value) => {
+  return new Promise((resolve, reject) => {
+    if (!isValidHttpUrl(value)) {
+      reject('Please input a valid url');
+    }
+    resolve();
+  });
+};
+
+const rules = reactive({
+  url: [
+    { required: true, message: 'Please input url', trigger: 'blur' },
+    { validator: validateUrl, trigger: 'blur' }
+  ]
 });
 
 const onAdd = () => {
@@ -167,6 +197,13 @@ const edit = async () => {
 };
 
 const onConfirm = async () => {
+  if (!form.value.isFolder) {
+    ruleFormRef.value.validate(valid => {
+      if (!valid) {
+        return false;
+      }
+    });
+  }
   if (props.isEditStatus) {
     await edit();
   } else {

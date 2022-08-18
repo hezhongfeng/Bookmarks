@@ -18,20 +18,20 @@
     }
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.0.6",
-    "element-plus": "^2.2.12",
+    "@element-plus/icons-vue": "^2.0.9",
+    "element-plus": "^2.2.13",
     "uuid": "^8.3.2",
     "vue": "^3.2.37"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
-    "@vitejs/plugin-vue": "^3.0.1",
+    "@vitejs/plugin-vue": "^3.0.3",
     "commitizen": "^4.2.5",
     "commitlint-config-cz": "^0.13.3",
     "commitlint-config-git-commit-emoji": "^1.0.0",
     "cz-conventional-changelog": "^3.3.0",
     "cz-customizable": "^6.9.1",
-    "eslint": "^8.21.0",
+    "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
@@ -39,6 +39,6 @@
     "unplugin-auto-import": "^0.11.1",
     "unplugin-element-plus": "^0.4.1",
     "unplugin-vue-components": "^0.22.4",
-    "vite": "^3.0.5"
+    "vite": "^3.0.8"
   }
 }
