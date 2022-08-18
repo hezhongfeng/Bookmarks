@@ -12,16 +12,20 @@ const listenUpdateTagMessage = async () => {
       case 'tags update':
         await getTags();
         break;
+
+      case 'nodeandtags update':
+        await getNodeandtags();
+        break;
     }
     sendResponse();
   });
 };
 
-const sendUpdateTagMessage = async () => {
+const sendUpdateTagMessage = async (action = 'tags update') => {
   chrome.runtime.sendMessage(
     {
       payload: {},
-      action: 'tags update'
+      action
     },
     function (response) {
       console.log('response', response);
@@ -96,7 +100,7 @@ const saveNodeandtags = async () => {
       };
     })
   });
-  sendUpdateTagMessage();
+  sendUpdateTagMessage('nodeandtags update');
 };
 
 const getNodeandtags = async () => {

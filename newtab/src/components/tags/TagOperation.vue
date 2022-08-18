@@ -26,7 +26,7 @@
 import { ref, watch } from 'vue';
 import { useTags } from './tags';
 
-const { createTag, updateTag, deleteTag } = useTags();
+const { createTag, updateTag, deleteTag, tags } = useTags();
 
 const props = defineProps({
   isEditStatus: {
@@ -54,8 +54,23 @@ const form = ref({
   id: ''
 });
 
+const validateTagName = (rule, value) => {
+  return new Promise((resolve, reject) => {
+    if (!props.isEditStatus && tags.value.some(tag => tag.name === value)) {
+      reject('Please input a valid tag name');
+    }
+    if (props.isEditStatus && tags.value.some(tag => tag.name === value && tag.id != form.value.id)) {
+      reject('Please input a valid tag name');
+    }
+    resolve();
+  });
+};
+
 const rules = ref({
-  name: [{ required: true, message: 'Please input tag name', trigger: 'blur' }]
+  name: [
+    { required: true, message: 'Please input tag name', trigger: 'blur' },
+    { validator: validateTagName, trigger: 'blur' }
+  ]
 });
 
 watch(
