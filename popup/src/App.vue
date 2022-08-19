@@ -39,6 +39,7 @@ const getCurrentTabInfo = async () => {
 onMounted(async () => {
   await getCurrentTabInfo();
   tree.value = await getTree();
+  form.value.node = tree.value[0].value;
 });
 
 const onSubmit = () => {

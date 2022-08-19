@@ -27,7 +27,6 @@
 </template>
 
 <script setup>
-import { DEFAULTFOLDER } from '../../../../utils/setting';
 import { ref, onMounted } from 'vue';
 import Operation from './Operation.vue';
 import { useNodes } from './eventListen';
@@ -49,12 +48,11 @@ const onisEditStatusChange = status => {
 
 // 初始化数据，选择默认的文件夹
 const initWorkspace = async () => {
-  // 搜索下 workspace
-  const searchBookmarkTreeNodes = await chrome.bookmarks.search(DEFAULTFOLDER);
-  currentFolderId.value = searchBookmarkTreeNodes[0].id;
+  const [rootNode] = await chrome.bookmarks.get('1');
+  currentFolderId.value = rootNode.id;
   breadCrumbs.value.push({
-    id: searchBookmarkTreeNodes[0].id,
-    title: searchBookmarkTreeNodes[0].title
+    id: rootNode.id,
+    title: rootNode.title
   });
   getNodes();
 };

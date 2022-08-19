@@ -1,5 +1,3 @@
-import { DEFAULTFOLDER } from '../../utils/setting';
-
 const getTreeByBookmarkTreeNodes = (bookmarkTreeNodes, trees) => {
   for (const bookmarkTreeNode of bookmarkTreeNodes) {
     // 判断是不是 bookmark
@@ -22,8 +20,7 @@ const getTreeByBookmarkTreeNodes = (bookmarkTreeNodes, trees) => {
 
 const getTree = async () => {
   // 搜索下 workspace
-  const searchBookmarkTreeNodes = await chrome.bookmarks.search(DEFAULTFOLDER);
-  const BookmarkTreeNodes = await chrome.bookmarks.getSubTree(searchBookmarkTreeNodes[0].id);
+  const BookmarkTreeNodes = await chrome.bookmarks.getSubTree('1');
   const tree = [];
   getTreeByBookmarkTreeNodes(BookmarkTreeNodes, tree);
   return tree;
