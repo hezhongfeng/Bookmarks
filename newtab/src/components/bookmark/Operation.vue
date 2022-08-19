@@ -73,7 +73,11 @@ watch(
           type: 'warning'
         })
           .then(async () => {
-            await chrome.bookmarks.remove(props.selectedNode.id);
+            if (props.selectedNode.isFolder) {
+              await chrome.bookmarks.removeTree(props.selectedNode.id);
+            } else {
+              await chrome.bookmarks.remove(props.selectedNode.id);
+            }
           })
           .finally(() => {
             hasSelectedDelete.value = false;
