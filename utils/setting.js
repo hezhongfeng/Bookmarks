@@ -1,1 +1,1 @@
-export const FOLDER = 'pineconee';
+export const DEFAULTFOLDER = 'pineconee';

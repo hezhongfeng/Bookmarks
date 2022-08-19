@@ -1,16 +1,13 @@
 {
-  "name": "bookmarks",
+  "name": "Bookmarks",
   "version": "1.0.0",
   "manifest_version": 3,
-  "description": "嘿嘿嘿",
-  "permissions": ["storage", "tabs", "bookmarks", "activeTab", "scripting"],
+  "description": "manager for bookmarks",
+  "permissions": ["storage", "tabs", "bookmarks"],
   "action": {
     "default_popup": "popup/index.html"
   },
   "chrome_url_overrides": {
     "newtab": "newtab/index.html"
-  },
-  "background": {
-    "service_worker": "background/background.js"
   }
 }
