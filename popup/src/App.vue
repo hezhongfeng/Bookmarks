@@ -2,15 +2,15 @@
   <div class="popup-wrapper">
     <el-button :icon="Close" text class="close" @click="onClose" />
     <el-form :model="form" label-width="60px" class="popup-form" size="default">
-      <el-form-item label="名称">
+      <el-form-item label="title">
         <el-input v-model="form.title" />
       </el-form-item>
-      <el-form-item label="文件夹">
+      <el-form-item label="folder">
         <el-tree-select v-model="form.node" :data="tree" check-strictly :render-after-expand="false" />
       </el-form-item>
       <el-form-item>
-        <el-button @click="onCancel">取消</el-button>
-        <el-button type="primary" @click="onSubmit">完成</el-button>
+        <el-button @click="onCancel">cancel</el-button>
+        <el-button type="primary" @click="onSubmit">confirm</el-button>
       </el-form-item>
     </el-form>
   </div>

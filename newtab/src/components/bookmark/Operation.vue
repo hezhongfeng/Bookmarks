@@ -1,9 +1,9 @@
 <template>
   <div class="operation">
     <el-row class="mb-4" justify="end">
-      <el-button type="primary" :disabled="hasSelectedEdit || hasSelectedDelete" @click="onAdd">添加</el-button>
-      <el-button type="primary" :disabled="hasSelectedDelete" @click="onEdit">编辑</el-button>
-      <el-button type="primary" :disabled="hasSelectedEdit" @click="onDelete">删除</el-button>
+      <el-button type="primary" :disabled="hasSelectedEdit || hasSelectedDelete" @click="onAdd">add</el-button>
+      <el-button type="primary" :disabled="hasSelectedDelete" @click="onEdit">edit</el-button>
+      <el-button type="primary" :disabled="hasSelectedEdit" @click="onDelete">delete</el-button>
     </el-row>
 
     <el-dialog v-model="dialogVisible" title="Add" width="40%" @close="onClosed">
@@ -25,8 +25,8 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="onCancel">取消</el-button>
-          <el-button type="primary" @click="onConfirm">确定</el-button>
+          <el-button @click="onCancel">cancel</el-button>
+          <el-button type="primary" @click="onConfirm">confirm</el-button>
         </span>
       </template>
     </el-dialog>
@@ -67,9 +67,9 @@ watch(
   newVal => {
     if (newVal) {
       if (hasSelectedDelete.value) {
-        ElMessageBox.confirm('确定删除所选?', '注意', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        ElMessageBox.confirm('Delete selected. Continue?', 'Warning', {
+          confirmButtonText: 'confirm',
+          cancelButtonText: 'cancell',
           type: 'warning'
         })
           .then(async () => {
