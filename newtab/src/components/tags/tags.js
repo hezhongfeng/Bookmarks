@@ -22,15 +22,15 @@ const listenUpdateTagMessage = async () => {
 };
 
 const sendUpdateTagMessage = async (action = 'tags update') => {
-  chrome.runtime.sendMessage(
-    {
+  chrome.runtime
+    .sendMessage({
       payload: {},
       action
-    },
-    function (response) {
+    })
+    .then(response => {
       console.log('response', response);
-    }
-  );
+    })
+    .catch(() => {});
 };
 
 const createTag = async name => {
