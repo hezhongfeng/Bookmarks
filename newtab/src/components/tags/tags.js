@@ -4,6 +4,15 @@ import { v4 as uuidv4 } from 'uuid';
 const tags = ref([]);
 const nodeandtags = ref([]);
 
+chrome.bookmarks.onRemoved.addListener(async (id, bookmark) => {
+  // 把此 node 的所有关联解除
+  while (nodeandtags.value.some(item => item.nodeId === id)) {
+    const index = nodeandtags.value.findIndex(item => item.nodeId === id);
+    nodeandtags.value.splice(index, 1);
+  }
+  await saveNodeandtags();
+});
+
 const listenUpdateTagMessage = async () => {
   chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     const { action, payload } = request;
@@ -45,6 +54,13 @@ const createTag = async name => {
 };
 
 const deleteTag = async tagId => {
+  // 先把此 tag 的所有关联解除
+  while (nodeandtags.value.some(item => item.tagId === tagId)) {
+    const index = nodeandtags.value.findIndex(item => item.tagId === tagId);
+    nodeandtags.value.splice(index, 1);
+  }
+  await saveNodeandtags();
+
   tags.value.splice(
     tags.value.findIndex(item => item.id === tagId),
     1
