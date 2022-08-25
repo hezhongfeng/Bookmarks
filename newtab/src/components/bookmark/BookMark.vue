@@ -71,7 +71,7 @@ const onEnter = node => {
     });
     getNodes();
   } else {
-    chrome.tabs.create({ url: node.url });
+    chrome.tabs.update({ url: node.url });
   }
 };
 
