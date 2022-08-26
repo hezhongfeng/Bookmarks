@@ -21,7 +21,7 @@
     ></tag-operation>
     <el-dialog v-model="dialogVisible" :title="selectedTag.name" width="40%">
       <el-card>
-        <div class="node-container">
+        <div class="tags-node-container">
           <el-button v-for="node of nodes" :key="node.id" @click="onEnterNode(node)">
             {{ node.title }}
             <template #icon>
@@ -120,6 +120,13 @@ const onEnter = async tag => {
       margin-top: 12px;
       margin-right: 20px;
     }
+  }
+}
+.tags-node-container {
+  .el-button {
+    margin-left: 0;
+    margin-right: 10px;
+    margin-bottom: 10px;
   }
 }
 </style>
