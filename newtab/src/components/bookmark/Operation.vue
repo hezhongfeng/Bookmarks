@@ -18,9 +18,20 @@
           <el-input v-model="form.title" />
         </el-form-item>
         <el-form-item v-show="!form.isFolder" label="Tag">
-          <el-select v-model="form.tagIds" multiple placeholder="Choose or Create tags">
+          <!-- <el-select v-model="form.tagIds" multiple placeholder="Choose or Create tags">
             <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
-          </el-select>
+          </el-select> -->
+          <!-- <el-checkbox-group v-model="form.tagIds">
+            <el-checkbox v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
+          </el-checkbox-group> -->
+          <el-check-tag
+            v-for="tag in tags"
+            :key="tag.id"
+            :checked="form.tagIds.some(item => item == tag.id)"
+            @change="onTagChange(tag.id, $event)"
+          >
+            {{ tag.name }}
+          </el-check-tag>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -234,6 +245,15 @@ const onClosed = () => {
     emit('edit-status-change', false);
   }, 100);
 };
+
+const onTagChange = (tagId, status) => {
+  if (status) {
+    form.value.tagIds.push(tagId);
+  } else {
+    const index = form.value.tagIds.findIndex(item => item == tagId);
+    form.value.tagIds.splice(index, 1);
+  }
+};
 </script>
 
 <style lang="scss">
@@ -241,6 +261,9 @@ const onClosed = () => {
   padding-top: 20px;
   .el-select {
     width: 100%;
+  }
+  .el-check-tag {
+    margin-right: 8px;
   }
 }
 </style>
