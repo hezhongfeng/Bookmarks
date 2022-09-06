@@ -69,13 +69,12 @@ const deleteTag = async tagId => {
 };
 
 const bindTags = async (tagIds, nodeId) => {
-  // 解绑所有
+  // 解绑这个 node 的所有 tag
   while (nodeandtags.value.some(item => item.nodeId === nodeId)) {
-    nodeandtags.value.splice(
-      nodeandtags.value.find(item => item.nodeId === nodeId),
-      1
-    );
+    const index = nodeandtags.value.findIndex(item => item.nodeId === nodeId);
+    nodeandtags.value.splice(index, 1);
   }
+  // 重新绑定
   for (const tagId of tagIds) {
     nodeandtags.value.push({
       tagId,

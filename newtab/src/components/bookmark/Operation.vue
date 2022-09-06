@@ -18,12 +18,6 @@
           <el-input v-model="form.title" />
         </el-form-item>
         <el-form-item v-show="!form.isFolder" label="Tag">
-          <!-- <el-select v-model="form.tagIds" multiple placeholder="Choose or Create tags">
-            <el-option v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
-          </el-select> -->
-          <!-- <el-checkbox-group v-model="form.tagIds">
-            <el-checkbox v-for="tag in tags" :key="tag.id" :label="tag.name" :value="tag.id" />
-          </el-checkbox-group> -->
           <el-check-tag
             v-for="tag in tags"
             :key="tag.id"
@@ -206,7 +200,7 @@ const edit = async () => {
   if (form.value.isFolder) {
     delete editDetails.url;
   }
-
+  
   await chrome.bookmarks.update(id, editDetails);
   bindTags(form.value.tagIds, id);
 };
@@ -263,7 +257,8 @@ const onTagChange = (tagId, status) => {
     width: 100%;
   }
   .el-check-tag {
-    margin-right: 8px;
+    margin-right: 10px;
+    margin-bottom: 10px;
   }
 }
 </style>
