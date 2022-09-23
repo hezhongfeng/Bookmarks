@@ -7,11 +7,11 @@
     "dev": "vite",
     "build": "vite build && cd dist && zip -r ../extension.zip *",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.vue,.ts,.jsx,.tsx popup newtab",
+    "lint": "eslint --ext .js,.vue,.ts,.jsx,.tsx newtab",
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{vue,js,ts,jsx,tsx}": "eslint --ext .js,.vue,.ts,.jsx,.tsx popup newtab"
+    "*.{vue,js,ts,jsx,tsx}": "eslint --ext .js,.vue,.ts,.jsx,.tsx newtab"
   },
   "config": {
     "commitizen": {

@@ -85,7 +85,7 @@ const getNodes = async () => {
 
 const onEnterNode = node => {
   if (!node.isFolder) {
-    chrome.tabs.create({ url: node.url });
+    chrome.tabs.update({ url: node.url });
   }
 };
 
