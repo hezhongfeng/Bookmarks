@@ -4,14 +4,6 @@
   "manifest_version": 3,
   "description": "manager for bookmarks",
   "permissions": ["storage", "tabs", "bookmarks"],
-  "action": {
-    "default_popup": "popup/index.html",
-    "default_icon": {
-      "16": "icons/16.png",
-      "24": "icons/24.png",
-      "32": "icons/32.png"
-    }
-  },
   "chrome_url_overrides": {
     "newtab": "newtab/index.html"
   },
